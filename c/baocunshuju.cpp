@@ -1743,7 +1743,7 @@ char* uc_BaseData::GetGongsiName(char *code)
 
 	strcpy(name, "NULL");
 
-	sprintf(file_source,"D:\\stock run\\codename\\codename.txt");
+	sprintf(file_source,"..\\data\\codename.txt");
 	ifstream if_file(file_source);		
 
 	while(if_file >> readbuf)
@@ -2050,4 +2050,83 @@ void uc_BaseData::Tiqu_hy_for_aliyun(void)
 	return;    
 }
 
+void   uc_BaseData::pf_Baocun_code_and_name(void)
+{
+    FILE *fp_read;
+    char file_read[64], file_write[64];
+	char buf[256];
+	ut_DZH_CodeName codename;
+	int i;
 
+    printf("[ok]提取代码和公司的对应表......\n");
+    strcpy(file_write,"..\\data\\codename.txt");
+    ofstream of_file(file_write);
+    
+
+    //读取深圳公司的数据
+    strcpy(file_read, "c:\\dzh365\\drvdata\\SZ\\FullDatFile.dat");
+	if ((fp_read = fopen(file_read,"rb")) == NULL) 
+	{
+		printf("[error][%s]源文件不对\n",file_read);
+        exit(0);
+	}
+    fread(buf, 1, 118, fp_read); //120个文件头数据不要
+	while (!feof(fp_read)) 
+    {
+        fread(&codename, sizeof codename, 1, fp_read);
+        if (*(int*)(&codename) == 0)
+            break;
+
+        //调整一下名称中的空格，如果是空格则调整到‘0’，空格在后续的读取中会有问题
+        for (i=0; i<16; i++)
+        {
+            if (codename.code[i] == ' ')
+                codename.code[i] = '0';
+        }
+
+        if (codename.code[0] == '0' || codename.code[0] == '3')
+        {
+    		sprintf(buf,"%6s%16s\n",codename.code, codename.name);
+	    	of_file << buf;
+	    }
+    }
+    fclose(fp_read);	
+
+
+    //读取上海的数据
+    strcpy(file_read, "c:\\dzh365\\drvdata\\SH\\FullDatFile.dat");
+	if ((fp_read = fopen(file_read,"rb")) == NULL) 
+	{
+		printf("[error][%s]源文件不对\n",file_read);
+        exit(0);
+	}
+    fread(buf, 1, 118, fp_read); //120个文件头数据不要
+	while (!feof(fp_read)) 
+    {
+        fread(&codename, sizeof codename, 1, fp_read);
+        if (*(int*)(&codename) == 0)
+            break;
+
+        //调整一下名称中的空格，如果是空格则调整到‘0’，空格在后续的读取中会有问题
+        for (i=0; i<16; i++)
+        {
+            if (codename.code[i] == ' ')
+                codename.code[i] = '0';
+        }
+        //如果非6开头的，全部不要
+        if (codename.code[0] != '6')
+            continue;
+            
+		sprintf(buf,"%6s%16s\n",codename.code, codename.name);
+		of_file << buf;
+    }
+    fclose(fp_read);	
+
+
+	sprintf(buf, "[END]\n");
+	of_file << buf;
+    
+	of_file.close();
+    return;
+    
+}

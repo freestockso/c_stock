@@ -46,7 +46,7 @@ unsigned int   	G_mode;
 void man(void)
 {   
     printf("%5d   Get DK data ... \n", A_gDK);     
-    printf("%5d   Get QX info... \n", A_gQX);         
+    printf("%5d   Get QX and Codename info... \n", A_gQX);         
     printf("%5d   Get gongsi/HY/hy_for_aliyun info... \n", A_gHY);     
     //printf("%5d   Get HY info for cloud Ali...\n", A_gHY4ali); 
     printf("%5d   Cal fin list for find download...\n", A_rFINList);     
@@ -124,7 +124,8 @@ int main(int argc, char* argv[])
     if (action == A_gQX)
     {
         uc_BaseData  ucv_baocunshuju;
-        ret = ucv_baocunshuju.pf_BaoCunQuanXi();
+        ucv_baocunshuju.pf_BaoCunQuanXi();
+        ucv_baocunshuju.pf_Baocun_code_and_name();
         return 0;
     }
 

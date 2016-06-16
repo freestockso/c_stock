@@ -406,23 +406,34 @@ char* 	uc_GongSi::GetStr_tag_zs(void)
 
 	sprintf(str+strlen(str), "[ ");
 	if (pdayk[index].p120d > 0)
-		sprintf(str+strlen(str), "+ ");			
+		sprintf(str+strlen(str), " +");			
 	else
-		sprintf(str+strlen(str), ". ");			
+		sprintf(str+strlen(str), " .");			
+	if (pdayk[index].p120d > pdayk[index-1].p120d)
+		sprintf(str+strlen(str), "+  ");			
+	else
+		sprintf(str+strlen(str), ".  ");			
+
 
 	if (pdayk[index].syl250 > 30)
 		sprintf(str+strlen(str), "* ");			
 	else if (pdayk[index].syl250 > 0)
 		sprintf(str+strlen(str), "+ ");			
 	else
-		sprintf(str+strlen(str), ". ");			
+		sprintf(str+strlen(str), ". ");		
+		
 
 	sprintf(str+strlen(str), "]    [");
 
 	if (pdayk[index].p30d > 0)
-		sprintf(str+strlen(str), "+ ");			
+		sprintf(str+strlen(str), " +");			
 	else
-		sprintf(str+strlen(str), ". ");			
+		sprintf(str+strlen(str), " .");			
+	if (pdayk[index].p30d > pdayk[index-1].p30d)
+		sprintf(str+strlen(str), "+  ");			
+	else
+		sprintf(str+strlen(str), ".  ");			
+
 
 	if (pdayk[index].syl30 > 15)
 		sprintf(str+strlen(str), "* ");			
@@ -446,23 +457,34 @@ char* 	uc_GongSi::GetStr_tag_hy(void)
 
 	sprintf(str+strlen(str), "[ ");
 	if (pdayk[index].p120d > 0)
-		sprintf(str+strlen(str), "+ ");			
+		sprintf(str+strlen(str), " +");			
 	else
-		sprintf(str+strlen(str), ". ");			
+		sprintf(str+strlen(str), " .");			
+	if (pdayk[index].p120d > pdayk[index-1].p120d)
+		sprintf(str+strlen(str), "+  ");			
+	else
+		sprintf(str+strlen(str), ".  ");			
+
 
 	if (pdayk[index].syl250 > 40)
 		sprintf(str+strlen(str), "* ");			
 	else if (pdayk[index].syl250 > 0)
 		sprintf(str+strlen(str), "+ ");			
 	else
-		sprintf(str+strlen(str), ". ");			
+		sprintf(str+strlen(str), ". ");		
+		
 
 	sprintf(str+strlen(str), "]    [");
 
 	if (pdayk[index].p30d > 0)
-		sprintf(str+strlen(str), "+ ");			
+		sprintf(str+strlen(str), " +");			
 	else
-		sprintf(str+strlen(str), ". ");			
+		sprintf(str+strlen(str), " .");			
+	if (pdayk[index].p30d > pdayk[index-1].p30d)
+		sprintf(str+strlen(str), "+  ");			
+	else
+		sprintf(str+strlen(str), ".  ");			
+
 
 	if (pdayk[index].syl30 > 20)
 		sprintf(str+strlen(str), "* ");			

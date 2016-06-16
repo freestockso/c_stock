@@ -28,17 +28,17 @@ void   uc_Market::Init(void)
 
 	pgongsi = &gongsi[gongsi_size];
 	pgongsi->Init("399101");
-	strcpy(pgongsi->name, "399101");
+	strcpy(pgongsi->name, "中小");
 	gongsi_size++;
 
 	pgongsi = &gongsi[gongsi_size];
 	pgongsi->Init("399102");
-	strcpy(pgongsi->name, "399102");
+	strcpy(pgongsi->name, "创业");
 	gongsi_size++;
 
 	pgongsi = &gongsi[gongsi_size];
 	pgongsi->Init("399300");
-	strcpy(pgongsi->name, "399300");
+	strcpy(pgongsi->name, "三百");
 	gongsi_size++;
 	
 	
@@ -68,6 +68,9 @@ void   uc_Market::out_m1(void)
     out_m1_one();
     out_m1_hangye();
     out_m1_czg();
+    out_m1_one_s();
+    out_m1_hangye_s();
+    out_m1_czg_s();    
 }
 
 
@@ -130,6 +133,40 @@ void   uc_Market::out_m1_czg(void)
     return;
 }
 
+void   uc_Market::out_m1_czg_s(void)
+{
+    uc_GongSi *pgongsi, *phy;
+    char file_write[] = "..\\data\\m1\\czg_s.txt";
+	char buf[512];
+
+    ofstream of_file(file_write);
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+    {
+        if (pgongsi->Is_czg()== NO)
+            continue;
+        if (pgongsi->fenshu < 85)
+            continue;
+        if (pgongsi->pdayk[pgongsi->dayk_size-1].syl250 < 0)
+            continue;
+        phy = GetGongsi_byCode(pgongsi->GetHYCode());
+        if (phy == NULL)
+            continue;
+        if (phy->pdayk[phy->dayk_size-1].syl250 <= 0)
+            continue;
+        {
+            sprintf(buf, "%8s%10s[%8s]%10d%4.0f%62s%8.2f\n", pgongsi->code, pgongsi->name, phy->name,
+                pgongsi->pdayk[pgongsi->dayk_size-1].date,
+                pgongsi->fenshu,
+                pgongsi->GetStr_syl30_czg()+60,
+                pgongsi->pdayk[pgongsi->dayk_size-1].syl30);
+            of_file << buf; 
+       } 
+    }
+
+    return;
+}
+
+
 void   uc_Market::out_m1_one(void)
 {
     uc_GongSi *pgongsi;
@@ -153,6 +190,30 @@ void   uc_Market::out_m1_one(void)
     return;
 }
 
+void   uc_Market::out_m1_one_s(void)
+{
+    uc_GongSi *pgongsi;
+    char file_write[] = "..\\data\\m1\\one_s.txt";
+	char buf[512];
+
+    ofstream of_file(file_write);
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+    {
+        if (is_m1_in_one(pgongsi) == YES)
+        {
+            sprintf(buf, "%8s%10s%10d%4.0f%52s%10.2f\n", pgongsi->code, pgongsi->name, 
+                pgongsi->pdayk[pgongsi->dayk_size-1].date,
+                pgongsi->fenshu,
+                pgongsi->GetStr_syl30_one()+70,
+                pgongsi->pdayk[pgongsi->dayk_size-1].syl30);
+            of_file << buf; 
+       } 
+    }
+
+    return;
+}
+
+
 void   uc_Market::out_m1_hangye(void)
 {
     char file_write[] = "..\\data\\m1\\hangye.txt";
@@ -166,7 +227,7 @@ void   uc_Market::out_m1_hangye(void)
 
 	//output zhishu info
     sprintf(buf, "#####--Total info--------------------##############################-----------------------\n");of_file << buf; 
-    sprintf(buf, "[p120d syl250 p30d syl30]\n");
+    sprintf(buf, "[p120d/p120dt syl250] [p30d/p30dt syl30]\n");
     of_file << buf; 
 	for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
 	{
@@ -174,7 +235,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "%4d%8s%10s%20s\n", i, pgongsi->code, pgongsi->name, pgongsi->GetStr_tag_zs());
+        sprintf(buf, "%4d%8s%10s%10d%20s\n", i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,
+        	pgongsi->GetStr_tag_zs());
         of_file << buf; 
         i++;
 	}
@@ -189,7 +251,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;	        
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "        %4d%8s%10s%20s\n", i, pgongsi->code, pgongsi->name, pgongsi->GetStr_tag_hy());
+        sprintf(buf, "        %4d%8s%10s%10d%20s\n", i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,
+        	pgongsi->GetStr_tag_hy());
         of_file << buf; 
 		i++;
 		if (i > 10)
@@ -207,8 +270,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "%4d%8s%10s%10d%8.2f%%%122s\n", 
-            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,pgongsi->pdayk[index].QD_120_1 * 100,
+        sprintf(buf, "%4d%8s%10s%8.2f%%%122s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].QD_120_1 * 100,
             pgongsi->GetStr_p30p120());
         of_file << buf; 
         i++;
@@ -223,8 +286,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "%4d%8s%10s%10d%9.0f%122s\n", 
-            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,pgongsi->pdayk[index].p30d,
+        sprintf(buf, "%4d%8s%10s%9.0f%122s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].p30d,
             pgongsi->GetStr_p30d_hy());
         of_file << buf; 
 		i++;
@@ -239,8 +302,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "%4d%8s%10s%10d%9.0f%122s\n", 
-            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,pgongsi->pdayk[index].p30d,
+        sprintf(buf, "%4d%8s%10s%9.0f%122s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].p30d,
             pgongsi->GetStr_p30d_trend_hy());
         of_file << buf; 
 		i++;
@@ -255,8 +318,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "%4d%8s%10s%10d%9.2f%122s\n", 
-            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,pgongsi->pdayk[index].syl30,
+        sprintf(buf, "%4d%8s%10s%9.2f%122s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].syl30,
             pgongsi->GetStr_syl30_hy());
         of_file << buf; 
 		i++;
@@ -272,8 +335,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "%4d%8s%10s%10d%9.2f%122s\n", 
-            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,pgongsi->pdayk[index].syl250,
+        sprintf(buf, "%4d%8s%10s%9.2f%122s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].syl250,
             pgongsi->GetStr_syl250_hy());
         of_file << buf; 
 		i++;
@@ -295,8 +358,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "%4d%8s%10s%10d%8.2f%%%122s\n", 
-            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,pgongsi->pdayk[index].QD_120_1 * 100,
+        sprintf(buf, "%4d%8s%10s%8.2f%%%122s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].QD_120_1 * 100,
             pgongsi->GetStr_p30p120());
         of_file << buf; 
         
@@ -318,8 +381,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "%4d%8s%10s%10d%9.0f%122s\n", 
-            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,pgongsi->pdayk[index].p30d,
+        sprintf(buf, "%4d%8s%10s%9.0f%122s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].p30d,
             pgongsi->GetStr_p30d_hy());
         of_file << buf; 
         
@@ -341,8 +404,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "%4d%8s%10s%10d%9.0f%122s\n", 
-            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,pgongsi->pdayk[index].p30d,
+        sprintf(buf, "%4d%8s%10s%9.0f%122s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].p30d,
             pgongsi->GetStr_p30d_trend_hy());
         of_file << buf; 
         
@@ -364,8 +427,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "%4d%8s%10s%10d%9.2f%122s\n", 
-            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,pgongsi->pdayk[index].syl30,
+        sprintf(buf, "%4d%8s%10s%9.2f%122s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].syl30,
             pgongsi->GetStr_syl30_hy());
         of_file << buf; 
         
@@ -388,8 +451,8 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 
 	    index = pgongsi->dayk_size-1;
-        sprintf(buf, "%4d%8s%10s%10d%9.2f%122s\n", 
-            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,pgongsi->pdayk[index].syl250,
+        sprintf(buf, "%4d%8s%10s%9.2f%122s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].syl250,
             pgongsi->GetStr_syl250_hy());
         of_file << buf; 
         
@@ -427,7 +490,10 @@ void   uc_Market::out_m1_hangye(void)
             if (pgs->name[0] == '*')
                 continue;
             {
-                sprintf(buf, "          %10s%10s%10.0f\n",  pgs->code, pgs->name,pgs->fenshu);
+                sprintf(buf, "          %10s%10s%10d%4.0f%82s%8.2f\n",  pgs->code, pgs->name,
+                	pgs->pdayk[pgs->dayk_size-1].date,
+                	pgs->fenshu, pgs->GetStr_syl30_one()+ 40, 
+                	pgs->pdayk[pgs->dayk_size-1].syl30);
                 of_file << buf;
                 num++;
                 if (num >=5)
@@ -443,6 +509,301 @@ void   uc_Market::out_m1_hangye(void)
 
 }
 
+
+void   uc_Market::out_m1_hangye_s(void)
+{
+    char file_write[] = "..\\data\\m1\\hangye_s.txt";
+	char buf[512];
+	uc_GongSi *pgongsi;
+	int i, index;
+
+	ofstream of_file(file_write);
+	pgongsi = phead;
+	i = 1;
+
+	//output zhishu info
+    sprintf(buf, "#####--Total info--------------------##############################-----------------------\n");of_file << buf; 
+    sprintf(buf, "[p120d/p120dt syl250] [p30d/p30dt syl30]\n");
+    of_file << buf; 
+	for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_ZHISHU)
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%10d%20s\n", i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,
+        	pgongsi->GetStr_tag_zs());
+        of_file << buf; 
+        i++;
+	}
+	i = 1;
+	for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_HANGYE)
+	        continue;
+	    if (pgongsi->num_gongsi_hy <= 5)
+	        continue;
+	    if (!strcmp(pgongsi->name, "NULL"))
+	        continue;	        
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "        %4d%8s%10s%10d%20s\n", i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].date,
+        	pgongsi->GetStr_tag_hy());
+        of_file << buf; 
+		i++;
+		if (i > 10)
+		    break;
+	}
+
+
+	//output zhishu info
+    sprintf(buf, "\n\n#####--zhishu info--------------------##############################-----------------------\n");of_file << buf; 
+    sprintf(buf, "QD30...[p30>p120, '+']\n");
+    of_file << buf; 
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_ZHISHU)
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%8.2f%%%62s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].QD_120_1 * 100,
+            pgongsi->GetStr_p30p120()+60);
+        of_file << buf; 
+        i++;
+	}
+    
+    sprintf(buf, "\nP30d value...[p30d>0, '+']\n");
+    of_file << buf; 
+    i = 1;
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_ZHISHU)
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%9.0f%62s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].p30d,
+            pgongsi->GetStr_p30d_hy()+60);
+        of_file << buf; 
+		i++;
+	}
+
+    sprintf(buf, "\nP30d trend...[p30d today>p30d yestoday, '+']\n");
+    of_file << buf; 
+    i = 1;
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_ZHISHU)
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%9.0f%62s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].p30d,
+            pgongsi->GetStr_p30d_trend_hy()+60);
+        of_file << buf; 
+		i++;
+	}
+
+    sprintf(buf, "\nsyl30 value...[syl30>0, '+'][syl30>10, '-']\n");
+    of_file << buf; 
+    i = 1;
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_ZHISHU)
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%9.2f%62s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].syl30,
+            pgongsi->GetStr_syl30_hy()+60);
+        of_file << buf; 
+		i++;
+	}
+
+
+    sprintf(buf, "\nsyl250 value...[syl250>0, '+']\n");
+    of_file << buf; 
+    i = 1;
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_ZHISHU)
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%9.2f%62s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].syl250,
+            pgongsi->GetStr_syl250_hy()+60);
+        of_file << buf; 
+		i++;
+	}
+
+	
+    //output hangye info
+    sprintf(buf, "\n\n#####--hangye info-------------#############################------------------------------\n");of_file << buf; 
+    sprintf(buf, "QD30...[p30>p120, '+']\n");
+    of_file << buf; 
+    i = 1;
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_HANGYE)
+	        continue;
+	    if (pgongsi->num_gongsi_hy <= 5)
+	        continue;
+	    if (!strcmp(pgongsi->name, "NULL"))
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%8.2f%%%62s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].QD_120_1 * 100,
+            pgongsi->GetStr_p30p120()+60);
+        of_file << buf; 
+        
+		i++;
+		if (i > 10)
+		    break;
+	}
+
+    sprintf(buf, "\nP30d value...[p30d>0, '+']\n");
+    of_file << buf; 
+    i = 1;
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_HANGYE)
+	        continue;
+	    if (pgongsi->num_gongsi_hy <= 5)
+	        continue;
+	    if (!strcmp(pgongsi->name, "NULL"))
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%9.0f%62s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].p30d,
+            pgongsi->GetStr_p30d_hy()+60);
+        of_file << buf; 
+        
+		i++;
+		if (i > 10)
+		    break;
+	}
+
+    sprintf(buf, "\nP30d trend...[p30d today>p30d yestoday, '+']\n");
+    of_file << buf; 
+    i = 1;
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_HANGYE)
+	        continue;
+	    if (pgongsi->num_gongsi_hy <= 5)
+	        continue;
+	    if (!strcmp(pgongsi->name, "NULL"))
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%9.0f%62s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].p30d,
+            pgongsi->GetStr_p30d_trend_hy()+60);
+        of_file << buf; 
+        
+		i++;
+		if (i > 10)
+		    break;
+	}
+
+    sprintf(buf, "\nsyl30 value...[syl30>0, '+'][syl30>10, '-']\n");
+    of_file << buf; 
+    i = 1;
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_HANGYE)
+	        continue;
+	    if (pgongsi->num_gongsi_hy <= 5)
+	        continue;
+	    if (!strcmp(pgongsi->name, "NULL"))
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%9.2f%62s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].syl30,
+            pgongsi->GetStr_syl30_hy()+60);
+        of_file << buf; 
+        
+		i++;
+		if (i > 10)
+		    break;
+	}
+
+
+    sprintf(buf, "\nsyl250 value...[syl250>0, '+']\n");
+    of_file << buf; 
+    i = 1;
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_HANGYE)
+	        continue;
+	    if (pgongsi->num_gongsi_hy <= 5)
+	        continue;
+	    if (!strcmp(pgongsi->name, "NULL"))
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%9.2f%62s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].syl250,
+            pgongsi->GetStr_syl250_hy()+60);
+        of_file << buf; 
+        
+		i++;
+		if (i > 10)
+		    break;
+	}
+
+
+    //the top 5 gongsi for every hangye
+    of_file << "\n\n##### Top5 for hangye#################\n";
+    i = 1;
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    uc_GongSi *pgs;
+	    int num = 0;
+	    
+	    if (pgongsi->type != GONGSITYPE_HANGYE)
+	        continue;
+	    if (pgongsi->num_gongsi_hy <= 5)
+	        continue;
+	    if (!strcmp(pgongsi->name, "NULL"))
+	        continue;
+        sprintf(buf, "%10s%10s...................................\n",  pgongsi->code, pgongsi->name);
+        of_file << buf;
+
+        for(pgs = phead; pgs != NULL; pgs=pgs->pnext_by_fenshu)   
+        {
+            if (pgs->type != GONGSITYPE_GONGSI)
+                continue;
+            if (pgs->Is_InHY(pgongsi->code) == NO)
+                continue;
+            if (pgs->name[0] == 'S')
+                continue;
+            if (pgs->name[0] == '*')
+                continue;
+            {
+                sprintf(buf, "          %10s%10s%10d%4.0f%42s%8.2f\n",  pgs->code, pgs->name,
+                	pgs->pdayk[pgs->dayk_size-1].date,
+                	pgs->fenshu, pgs->GetStr_syl30_one()+ 80, 
+                	pgs->pdayk[pgs->dayk_size-1].syl30);
+                of_file << buf;
+                num++;
+                if (num >=5)
+                    break;
+            }
+        }
+        
+		i++;
+		if (i > 10)
+		    break;
+	}
+
+
+}
 
 void uc_Market::Cal_Paiming(void)
 {

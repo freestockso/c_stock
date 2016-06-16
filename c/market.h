@@ -55,6 +55,9 @@ public:
 	void	out_m1_hangye(void);
 	void	out_m1_one(void);	
 	void	out_m1_czg(void);	
+	void	out_m1_hangye_s(void);
+	void	out_m1_one_s(void);	
+	void	out_m1_czg_s(void);	
 
 	int   	is_m1_in_one(uc_GongSi *pgongsi);
 	
