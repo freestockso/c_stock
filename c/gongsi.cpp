@@ -620,13 +620,15 @@ void    uc_GongSi::SetType(void)
 }
 
 
-void	uc_GongSi::Output(void)
+void	uc_GongSi::Output_view(void)
 {
     int i;
     char file_write[64];
     char buf[256];
 
-	sprintf(file_write, "..\\data\\output\\%s.txt",code);
+	printf("...Output_view...%s....\n", code);
+
+	sprintf(file_write, "..\\data\\view\\%s.txt",code);
 	ofstream of_file(file_write);
 	
 	sprintf(buf,"%12s%12s%12s%12s%12s%12s%12s%12s%12s%12s\n","date", "close", "cqj", "qd", "P30", "P120", "p30d", "p120d", "syl30", "syl250");	

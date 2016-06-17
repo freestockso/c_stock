@@ -125,7 +125,7 @@ public:
 
 	void	Prt_Info(char*);
     int     Prt_QD(void);
-	void	Output(void);
+	void	Output_view(void);
     
 	float	Get_songgu(unsigned int, unsigned int);
 	int		Get_IndexByDate(int date);

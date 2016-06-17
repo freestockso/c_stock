@@ -59,6 +59,14 @@ void   uc_Market::Cal_m1(void)
          if (pgongsi->type == GONGSITYPE_ZHISHU)
             Cal_HY(pgongsi);
     }
+
+	printf("output_view info ..........................\n");
+	for (i=0; i<gongsi_size; i++)
+	{
+		pgongsi = &gongsi[i];
+		if (pgongsi->type != GONGSITYPE_NULL)
+			pgongsi->Output_view();
+    }
     
     return;
 }
@@ -998,6 +1006,5 @@ void uc_Market::Cal_HY(uc_GongSi *phy)
             total = total + phy->pdayk[i_date-j].syl250;
         phy->pdayk[i_date].syl250= total / 30;
     }
-    phy->Output();
 }
 
