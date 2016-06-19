@@ -140,6 +140,7 @@ public:
 	char* 	GetStr_tag_zs(void);
 
 	char*	GetHYCode(void);
+	int 	Get_fin_index(int date);
 	
 
 

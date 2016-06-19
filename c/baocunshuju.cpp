@@ -163,7 +163,7 @@ void uc_BaseData::Compute_Shouru_lirun(void)
 	{
 	    size_shouru_lirun = 0; 									//renew
 		memset(&shouru_lirun, 0, sizeof shouru_lirun);	    
-		sprintf(file_source,"D:\\stock run\\database\\fin\\%s_fin.txt",gongsi_name);	
+		sprintf(file_source,"..\\data\\fin\\%s_fin.txt",gongsi_name);	
 		ifstream if_file(file_source);	
 		if ((fp_read = fopen(file_source,"rb")) != NULL )  //文件存在
 		{
@@ -197,7 +197,23 @@ void uc_BaseData::Compute_Shouru_lirun(void)
 			shouru_lirun[i].lirun = shouru_lirun[i].lirun - shouru_lirun[i-1].lirun;
 		}
 	}
-	
+
+	//compute for 4 season
+	for (i=size_shouru_lirun-1; i>=4; i--)
+	{
+		shouru_lirun[i].shouru = shouru_lirun[i].shouru + shouru_lirun[i-1].shouru + shouru_lirun[i-2].shouru + shouru_lirun[i-3].shouru;
+		shouru_lirun[i].lirun = shouru_lirun[i].lirun + shouru_lirun[i-1].lirun + shouru_lirun[i-2].lirun + shouru_lirun[i-3].lirun;
+		shouru_lirun[i].gdqyl = My_div(shouru_lirun[i].lirun, shouru_lirun[i].shouru);
+	}
+
+	//compute for HB
+	for (i=size_shouru_lirun-1; i>=5; i--)	
+	{
+		shouru_lirun[i].tb_shouru = (My_div(shouru_lirun[i].shouru, shouru_lirun[i-1].shouru) - 1)*100;
+		shouru_lirun[i].tb_lirun = (My_div(shouru_lirun[i].lirun, shouru_lirun[i-1].lirun) - 1)*100;		
+	}
+
+/*	
 	for (i=size_shouru_lirun-1; i>3; i--)
 	{
 		if (shouru_lirun[i-4].shouru != 0)
@@ -219,17 +235,17 @@ void uc_BaseData::Compute_Shouru_lirun(void)
 			shouru_lirun[i].gdqy + shouru_lirun[i-1].gdqy + shouru_lirun[i-2].gdqy  + shouru_lirun[i-3].gdqy
 		) * 4;
 	}
-
+*/
 	/*
 		输出
 	*/
 	{
 		char file_write[64];	
 				
-		sprintf(file_write,"D:\\stock run\\database\\fin\\%s_tb.txt",gongsi_name);		
+		sprintf(file_write,"..\\data\\fin\\%s_tb.txt",gongsi_name);		
 		ofstream of_file(file_write);	 
 			
-		sprintf(writebuf ,"%12s%16s%16s%12s%12s%12s\n","时间",gongsi_name,"净利润","收入同比","利润同比","股东权益率"); 
+		sprintf(writebuf ,"%12s%16s%16s%12s%12s%12s%16s\n","date","sr","lr","srtb","lrtb","gdqyl","gdqy"); 
 		of_file << writebuf; 
 			
 		for (i=0; i<size_shouru_lirun; i++)
@@ -318,10 +334,20 @@ void uc_BaseData::vf_BaoCun_F10_Shouru_Lirun(void)
 	size_tmp = 0;
 
 	// filename
-	sprintf(file_lr, "D:\\fin\\%s1", gongsi_name);	
-	ifstream if_lr(file_lr);				
-	sprintf(file_zc, "D:\\fin\\%s2", gongsi_name);	
+	sprintf(file_lr, "..\\data\\fin_sou\\%s1", gongsi_name);	
+	sprintf(file_zc, "..\\data\\fin_sou\\%s2", gongsi_name);	
+	if (MYFile_FileIsExist(file_lr) == NO)
+	{
+		printf("...file %s not exist!...\n", file_lr);
+		return;
+	}	
+	if (MYFile_FileIsExist(file_zc) == NO)
+	{
+		printf("...file %s not exist!...\n", file_zc);
+		return;
+	}	
 	ifstream if_zc(file_zc);		
+	ifstream if_lr(file_lr);				
 
 	//get date
 	if_lr >> readbuf;
@@ -477,7 +503,7 @@ TAG_save:
 	{
 		char file_write[64];	
 		
-	    sprintf(file_write,"D:\\stock run\\database\\fin\\%s_fin.txt",gongsi_name);		
+	    sprintf(file_write,"..\\data\\fin\\%s_fin.txt",gongsi_name);		
 		ofstream of_file(file_write);	 
 
 		sprintf(readbuf,"%12s%16s%16s%16s\n","时间",gongsi_name,"净利润","股东权益"); 

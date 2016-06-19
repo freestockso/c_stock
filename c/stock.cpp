@@ -48,7 +48,7 @@ void man(void)
     printf("%5d   Get DK data ... \n", A_gDK);     
     printf("%5d   Get QX and Codename info... \n", A_gQX);         
     printf("%5d   Get gongsi/HY/hy_for_aliyun info... \n", A_gHY);     
-    //printf("%5d   Get HY info for cloud Ali...\n", A_gHY4ali); 
+    printf("%5d   Cal fin data for all gongsi...\n", A_cFin); 
     printf("%5d   Cal fin list for find download...\n", A_rFINList);     
     printf("%5d   Cal HY fin...\n", A_cHYF); 
     
@@ -80,7 +80,29 @@ void ReadBinDat(void)
 	return;
 }
 
+//compute fin, not include compute from source fin data
+int CFin(void)
+{
+    uc_BaseData  ucv_baocunshuju;
 
+	char file_source[64] = "..\\data\\tdx_gongsi.txt" ;
+	char readbuf[1024];	
+	ifstream if_file(file_source);		    
+
+
+	while(if_file >> readbuf)
+	{
+		if (!strcmp(readbuf,"[END]") )
+			break;
+	
+        strcpy(ucv_baocunshuju.gongsi_name, readbuf);
+        ucv_baocunshuju.pf_BaoCun_F10_data();
+
+		if_file.getline(readbuf, sizeof readbuf);
+	}	
+
+    return 0;
+}
 
 int main(int argc, char* argv[])
 {
@@ -100,6 +122,13 @@ int main(int argc, char* argv[])
         ret = pf_GengXinAllDayK();  
         return 0;
     }
+
+    if (action ==A_cFin)
+    {
+		CFin();
+        return 0;
+    }
+    
 
     if (action == A_gHY)
     {
@@ -137,7 +166,9 @@ int main(int argc, char* argv[])
 
     if (action == A_cHYF)
     {
-        //Market.cHYF();
+        Index_std_c();
+        ReadBinDat();
+        Market.cHYF();
         return 0;
     }
 

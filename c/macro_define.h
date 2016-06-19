@@ -49,8 +49,10 @@
 #define     A_gQX           	102	
 #define     A_gHY           	103
 #define     A_gHY4ali        	104
+#define		A_cFin				200 
 #define     A_rFINList			201 
 #define		A_cHYF				202 
+
 
 #define		A_m0				0
 #define     A_m1               	1	

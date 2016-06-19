@@ -51,6 +51,28 @@ def ShowGS(com1, com2, com3):
 		plt.fill_between(df.index, df['syl250'], 0, where=df['syl250']<=0,facecolor='green')
 		plt.title(com1 + '  ' +  com2 + '  '  + str(max(df['date'])))
 		View_10X(plt,df, '123')
+	elif com3 == 'sr':
+		f_view = "..\\..\\data\\fin\\" + com2 + "_tb.txt"
+		if  os.path.exists(f_view) == False:
+			print "...[Error] no file " + f_view
+			return
+		df = pd.read_table(f_view, sep=' +', engine = 'python')
+		#df['sr'].plot(kind='bar',color='green')
+		df[1:df.index.size]['sr'].plot(kind='bar',color='green')
+		df[1:df.index.size]['lr'].plot(color='red', secondary_y=True, linewidth=LW)	
+		plt.title(com1 + '  ' +  com2 + '  ' + str(df.loc[df.index.size-1,'date']))
+	
+	elif com3 == 'hb':
+		f_view = "..\\..\\data\\fin\\" + com2 + "_tb.txt"
+		if  os.path.exists(f_view) == False:
+			print "...[Error] no file " + f_view
+			return
+		df = pd.read_table(f_view, sep=' +', engine = 'python')
+		#df['sr'].plot(kind='bar',color='green')
+		df[1:df.index.size][['srtb','lrtb']].plot(kind='bar',color={'red','green'})
+		df[1:df.index.size]['gdqyl'].plot(color='blue', secondary_y=True, linewidth = LW)
+		plt.title(com1 + '  ' +  com2 + '  ' + str(df.loc[df.index.size-1,'date']))	
+		
 	else:
 		print '[Error] input error ...'
 		return
@@ -104,6 +126,17 @@ def ShowHY(com1, com2, com3):
 		plt.fill_between(df.index, df['p30d'], 0, where=df['p30d']>0,facecolor='red')
 		plt.fill_between(df.index, df['p30d'], 0, where=df['p30d']<=0,facecolor='green')
 		plt.title(com1 + '  ' +  com2 + '  '  + str(max(df['date'])))
+	elif com3 == 'gbsr':
+		f_view = "..\\..\\data\\fin\\" + com2 + ".txt"
+		if  os.path.exists(f_view) == False:
+			print "...[Error] no file " + f_view
+			return
+		df = pd.read_table(f_view, sep=' +', engine = 'python')
+		#df['sr'].plot(kind='bar',color='green')
+		df[1:df.index.size]['dqsr'].plot(kind='bar',color='green')
+		df[1:df.index.size]['dqlr'].plot(color='red', secondary_y=True, linewidth=LW)		
+		plt.title(com1 + '  ' +  com2 + '  ' + str(df.loc[df.index.size-1,'date']))	
+		
 	else:
 		print '[Error] input error ...'
 		return

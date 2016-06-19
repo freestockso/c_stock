@@ -45,6 +45,23 @@ void   uc_Market::Init(void)
 
 }
 
+
+void   uc_Market::cHYF(void)
+{
+    int i;
+    uc_GongSi *pgongsi;
+
+    
+    for (i=0; i<gongsi_size; i++)
+    {
+         pgongsi = &gongsi[i];
+         if (pgongsi->type == GONGSITYPE_HANGYE || pgongsi->type == GONGSITYPE_ZHISHU)
+         {
+            Cal_HY_Fin(pgongsi);
+         }  
+    }
+}
+
 void   uc_Market::Cal_m1(void)
 {
     int i;
@@ -54,10 +71,10 @@ void   uc_Market::Cal_m1(void)
     for (i=0; i<gongsi_size; i++)
     {
          pgongsi = &gongsi[i];
-         if (pgongsi->type == GONGSITYPE_HANGYE)
+         if (pgongsi->type == GONGSITYPE_HANGYE || pgongsi->type == GONGSITYPE_ZHISHU)
+         {
             Cal_HY(pgongsi);
-         if (pgongsi->type == GONGSITYPE_ZHISHU)
-            Cal_HY(pgongsi);
+         }  
     }
 
 	printf("output_view info ..........................\n");
@@ -504,7 +521,7 @@ void   uc_Market::out_m1_hangye(void)
                 	pgs->pdayk[pgs->dayk_size-1].syl30);
                 of_file << buf;
                 num++;
-                if (num >=5)
+                if (num >=10)
                     break;
             }
         }
@@ -800,7 +817,7 @@ void   uc_Market::out_m1_hangye_s(void)
                 	pgs->pdayk[pgs->dayk_size-1].syl30);
                 of_file << buf;
                 num++;
-                if (num >=5)
+                if (num >=10)
                     break;
             }
         }
@@ -915,6 +932,136 @@ uc_GongSi *uc_Market::GetGongsi_byCode(char* code)
     return NULL;
 }
 
+
+void uc_Market::Cal_HY_Fin(uc_GongSi *phy)
+{
+    int i_gc, date,  num_gongsi, j;
+    uc_GongSi *pgongsi;
+    char f_fin[64], buf[256];
+
+    
+
+    printf("...Cal_HY_Fin %s... %s...\n", phy->code, phy->name);
+
+    //get hy gongsi and set flag
+    num_gongsi = 0;
+    for (i_gc = 0; i_gc < gongsi_size; i_gc++)
+    {
+        pgongsi = &gongsi[i_gc];
+        pgongsi->flag = NO;
+        if (pgongsi->type != GONGSITYPE_GONGSI)
+            continue;
+        if  (pgongsi->Is_InHY(phy->code) == NO)
+            continue;
+        pgongsi->flag = YES;    
+        num_gongsi++;
+    }    
+    phy->num_gongsi_hy = num_gongsi;
+    if (num_gongsi == 0)
+        return;
+
+    //find every gongsi and get the right day data
+	{
+		float now_dqsr = 0, now_lrl = 0, pre_dqru = 0, pre_lrl = 0;
+		uc_GongSi *p000002;
+		int index_02, i, index_gs;
+		UT_fin_stat fin_stat;
+		UT_fin_stat p1, p2, p3;
+	    ofstream of_file;	
+	    
+	    sprintf(f_fin, "..\\data\\fin\\%s.txt", phy->code);
+    	of_file.open(f_fin);
+		
+		p000002 = GetGongsi_byCode("000002");
+		index_02 = p000002->Get_fin_index(20090331);
+
+		sprintf(buf, "%4s%10s%16s%16s%16s%10s%10s%10s%12s\n", "num", "date", "gdqy",
+			"zsr", "zlr", "dqsr", "dqlr", "lrl", "trend");			
+		of_file << buf;	
+		
+		for (j=index_02; j<p000002->shouru_lirun_size; j++)
+		{
+			date = p000002->shouru_lirun[j].date;
+			fin_stat.date = date;
+
+			fin_stat.num = 0; 
+			fin_stat.t_gdqy = 0;
+			fin_stat.t_sy = 0;
+			fin_stat.t_lr = 0;
+
+			for (i=0; i<gongsi_size; i++)
+			{
+				pgongsi = &gongsi[i];
+				if (gongsi[i].type != GONGSITYPE_GONGSI)
+					continue;
+				if (gongsi[i].flag == NO)
+					continue;	
+
+				index_gs = pgongsi->Get_fin_index(date);
+				if (index_gs == INVALID_INDEX)
+				{
+					pgongsi->flag = YES;
+					continue;
+				}	
+				fin_stat.num++;
+				fin_stat.t_gdqy += pgongsi->shouru_lirun[index_gs].gdqy;
+				fin_stat.t_sy += pgongsi->shouru_lirun[index_gs].shouru;
+				fin_stat.t_lr += pgongsi->shouru_lirun[index_gs].lirun;	
+
+				if (j == p000002->shouru_lirun_size - 1)
+				{
+					pgongsi->flag = YES;
+				}
+			}
+
+			if (fin_stat.num < 2)
+				continue;
+
+			fin_stat.dwsr = fin_stat.t_sy / fin_stat.t_gdqy * 100;
+			fin_stat.dwlr = fin_stat.t_lr / fin_stat.t_gdqy * 100;
+			fin_stat.lrl = (float)fin_stat.t_lr / fin_stat.t_sy * 100;
+
+			if (j - index_02 >= 4)
+			{
+				//now_dqsr = p3.dwsr + p2.dwsr + p1.dwsr + fin_stat.dwsr;
+				//now_lrl = p3.lrl + p2.lrl + p1.lrl + fin_stat.lrl;
+				now_dqsr = fin_stat.dwsr;
+				now_lrl = fin_stat.lrl;
+			
+				sprintf(buf, "%4d%10d%16.0f%16.0f%16.0f%10.2f%10.2f%10.2f",
+					fin_stat.num,
+					fin_stat.date,
+					fin_stat.t_gdqy,
+					fin_stat.t_sy,
+					fin_stat.t_lr,
+					fin_stat.dwsr,
+					fin_stat.dwlr,
+					fin_stat.lrl				 
+					);
+				of_file << buf;
+
+				if (now_dqsr >= pre_dqru && now_lrl >= pre_lrl)
+					sprintf(buf, "%12s\n", "+");
+				else if (now_dqsr < pre_dqru && now_lrl < pre_lrl)
+					sprintf(buf, "%12s\n", "-");
+				else
+					sprintf(buf, "%12s\n", "0");
+				of_file << buf;
+
+				pre_dqru = now_dqsr;
+				pre_lrl = now_lrl;
+				
+			}
+
+			memcpy(&p3, &p2, sizeof p3);
+			memcpy(&p2, &p1, sizeof p3);
+			memcpy(&p1, &fin_stat, sizeof p3);			
+			
+		}
+			
+		of_file.close();
+	} 
+}
 
 void uc_Market::Cal_HY(uc_GongSi *phy)
 {

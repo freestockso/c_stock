@@ -33,6 +33,21 @@ typedef struct {
 } ut_cm1;
 
 
+typedef struct {
+	char 	hycode[16];
+	int 	date;
+	int 	is_new;
+	int 	num;
+
+	float 	t_sy;
+	float 	t_lr;
+	float 	t_gdqy;
+
+	float 	dwsr;
+	float 	dwlr;
+	float 	lrl;
+}UT_fin_stat;
+
 class uc_Market {
 public:
     uc_GongSi   gongsi[MARKET_MAXGONGSI];
@@ -64,6 +79,7 @@ public:
 
 	void 		Cal_Paiming(void);
     void		Cal_HY(uc_GongSi*);
+	void 		Cal_HY_Fin(uc_GongSi *phy);
     
 	uc_GongSi *GetGongsi_byCode(char* code);
     uc_GongSi *GetHY_by_GSCode(char* code);

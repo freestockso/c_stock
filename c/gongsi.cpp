@@ -1015,3 +1015,18 @@ int uc_GongSi::Is_czg_low(void)
 
 	return YES;	
 }
+
+
+int uc_GongSi::Get_fin_index(int date)
+{
+	int i;
+	
+	for (i=5; i<shouru_lirun_size; i++)
+	{
+		if (shouru_lirun[i].date == date)
+			return i;
+	}
+
+	return INVALID_INDEX;
+}
+
