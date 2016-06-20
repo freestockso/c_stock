@@ -375,6 +375,37 @@ char* 	uc_GongSi::GetStr_syl250_hy(void)
 }
 
 
+char* 	uc_GongSi::GetStr_fin(void)
+{
+	static char str[256];
+	int i, index;
+
+	memset(str, 0 ,sizeof str);
+
+	if (shouru_lirun_size < 8)
+		return str;
+
+	index = shouru_lirun_size - 1;
+	if (shouru_lirun[index-7].gdqyl >= 0)
+		sprintf(str,"[%02.0f", shouru_lirun[index-7].gdqyl);
+	else
+		sprintf(str,"[00");
+	for (i=7; i>0; i--)
+	{
+		if (shouru_lirun[index-i].gdqyl <  shouru_lirun[index-i+1].gdqyl)
+			sprintf(str+strlen(str),"+");			
+		else
+			sprintf(str+strlen(str),"-");			
+	}
+
+	if (shouru_lirun[index].gdqyl >= 0)	
+		sprintf(str+strlen(str),"%02.0f]", shouru_lirun[index].gdqyl);
+	else
+		sprintf(str+strlen(str),"00]");
+	
+	return str;
+}
+
 char* 	uc_GongSi::GetStr_p30d_trend_hy(void)
 {
 	static char str[256];

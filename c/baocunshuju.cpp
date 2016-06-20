@@ -203,7 +203,7 @@ void uc_BaseData::Compute_Shouru_lirun(void)
 	{
 		shouru_lirun[i].shouru = shouru_lirun[i].shouru + shouru_lirun[i-1].shouru + shouru_lirun[i-2].shouru + shouru_lirun[i-3].shouru;
 		shouru_lirun[i].lirun = shouru_lirun[i].lirun + shouru_lirun[i-1].lirun + shouru_lirun[i-2].lirun + shouru_lirun[i-3].lirun;
-		shouru_lirun[i].gdqyl = My_div(shouru_lirun[i].lirun, shouru_lirun[i].shouru);
+		shouru_lirun[i].gdqyl = My_div(shouru_lirun[i].lirun, shouru_lirun[i].shouru) * 100;
 	}
 
 	//compute for HB

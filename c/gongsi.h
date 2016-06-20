@@ -138,6 +138,8 @@ public:
 	char* 	GetStr_syl30_czg(void);
 	char* 	GetStr_tag_hy(void);
 	char* 	GetStr_tag_zs(void);
+	char* 	GetStr_fin(void);
+	
 
 	char*	GetHYCode(void);
 	int 	Get_fin_index(int date);

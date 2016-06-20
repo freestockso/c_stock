@@ -77,6 +77,7 @@ void   uc_Market::Cal_m1(void)
          }  
     }
 
+
 	printf("output_view info ..........................\n");
 	for (i=0; i<gongsi_size; i++)
 	{
@@ -203,7 +204,7 @@ void   uc_Market::out_m1_one(void)
     {
         if (is_m1_in_one(pgongsi) == YES)
         {
-            sprintf(buf, "%8s%10s%10d%4.0f%122s%10.2f\n", pgongsi->code, pgongsi->name, 
+            sprintf(buf, "%8s%10s%13s%10d%4.0f%122s%10.2f\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].date,
                 pgongsi->fenshu,
                 pgongsi->GetStr_syl30_one(),
@@ -226,10 +227,10 @@ void   uc_Market::out_m1_one_s(void)
     {
         if (is_m1_in_one(pgongsi) == YES)
         {
-            sprintf(buf, "%8s%10s%10d%4.0f%52s%10.2f\n", pgongsi->code, pgongsi->name, 
+            sprintf(buf, "%8s%10s%13s%10d%4.0f%42s%10.2f\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].date,
                 pgongsi->fenshu,
-                pgongsi->GetStr_syl30_one()+70,
+                pgongsi->GetStr_syl30_one()+80,
                 pgongsi->pdayk[pgongsi->dayk_size-1].syl30);
             of_file << buf; 
        } 
@@ -501,7 +502,7 @@ void   uc_Market::out_m1_hangye(void)
 	        continue;
 	    if (!strcmp(pgongsi->name, "NULL"))
 	        continue;
-        sprintf(buf, "%10s%10s...................................\n",  pgongsi->code, pgongsi->name);
+        sprintf(buf, "%6s%10s...................................\n",  pgongsi->code, pgongsi->name);
         of_file << buf;
 
         for(pgs = phead; pgs != NULL; pgs=pgs->pnext_by_fenshu)   
@@ -515,7 +516,7 @@ void   uc_Market::out_m1_hangye(void)
             if (pgs->name[0] == '*')
                 continue;
             {
-                sprintf(buf, "          %10s%10s%10d%4.0f%82s%8.2f\n",  pgs->code, pgs->name,
+                sprintf(buf, "%10s%10s%13s%10d%4.0f%82s%8.2f\n",  pgs->code, pgs->name, pgs->GetStr_fin(),
                 	pgs->pdayk[pgs->dayk_size-1].date,
                 	pgs->fenshu, pgs->GetStr_syl30_one()+ 40, 
                 	pgs->pdayk[pgs->dayk_size-1].syl30);
@@ -797,7 +798,7 @@ void   uc_Market::out_m1_hangye_s(void)
 	        continue;
 	    if (!strcmp(pgongsi->name, "NULL"))
 	        continue;
-        sprintf(buf, "%10s%10s...................................\n",  pgongsi->code, pgongsi->name);
+        sprintf(buf, "%6s%10s...................................\n",  pgongsi->code, pgongsi->name);
         of_file << buf;
 
         for(pgs = phead; pgs != NULL; pgs=pgs->pnext_by_fenshu)   
@@ -811,7 +812,7 @@ void   uc_Market::out_m1_hangye_s(void)
             if (pgs->name[0] == '*')
                 continue;
             {
-                sprintf(buf, "          %10s%10s%10d%4.0f%42s%8.2f\n",  pgs->code, pgs->name,
+                sprintf(buf, "%10s%10s%13s%10d%4.0f%42s%8.2f\n",  pgs->code, pgs->name, pgs->GetStr_fin(),
                 	pgs->pdayk[pgs->dayk_size-1].date,
                 	pgs->fenshu, pgs->GetStr_syl30_one()+ 80, 
                 	pgs->pdayk[pgs->dayk_size-1].syl30);
