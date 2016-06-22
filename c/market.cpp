@@ -200,6 +200,7 @@ void   uc_Market::out_m1_one(void)
 	char buf[512];
 
     ofstream of_file(file_write);
+    ofstream of_file_zxg("c:\\zd_zszq\\T0002\\blocknew\\zxg.blk");
     for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
     {
         if (is_m1_in_one(pgongsi) == YES)
@@ -210,6 +211,12 @@ void   uc_Market::out_m1_one(void)
                 pgongsi->GetStr_syl30_one(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].syl30);
             of_file << buf; 
+			if (pgongsi->code[0] == '6')
+				sprintf(buf,"1%s\n", pgongsi->code);
+			else
+				sprintf(buf,"0%s\n", pgongsi->code);
+			of_file_zxg << buf;
+            
        } 
     }
 
