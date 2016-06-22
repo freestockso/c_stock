@@ -104,7 +104,7 @@ void   uc_Market::out_m1(void)
 
 int   uc_Market::is_m1_in_one(uc_GongSi *pgongsi)
 {
-    static char one[10][10] = {
+    static char one[20][10] = {
         "000418", 
         "600298", 
         "002508", 
@@ -114,11 +114,13 @@ int   uc_Market::is_m1_in_one(uc_GongSi *pgongsi)
         "002304", 
         "002661", 
         "600276", 
-        "600519" 
+        "600519",
+        "300127",        
+        "300342",                
         };
     int i;
 
-    for (i=0; i<10; i++)
+    for (i=0; i<20; i++)
     {
         if (!strcmp(pgongsi->code, one[i]))
             return YES;
@@ -205,9 +207,10 @@ void   uc_Market::out_m1_one(void)
     {
         if (is_m1_in_one(pgongsi) == YES)
         {
-            sprintf(buf, "%8s%10s%13s%10d%4.0f%122s%10.2f\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
+            sprintf(buf, "%8s%10s%13s%10d%4.0f%3s%122s%10.2f\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].date,
                 pgongsi->fenshu,
+                pgongsi->GetStr_syl250_one(),
                 pgongsi->GetStr_syl30_one(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].syl30);
             of_file << buf; 
@@ -234,9 +237,10 @@ void   uc_Market::out_m1_one_s(void)
     {
         if (is_m1_in_one(pgongsi) == YES)
         {
-            sprintf(buf, "%8s%10s%13s%10d%4.0f%42s%10.2f\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
+            sprintf(buf, "%8s%10s%13s%10d%4.0f%3s%42s%10.2f\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].date,
                 pgongsi->fenshu,
+                pgongsi->GetStr_syl250_one(),
                 pgongsi->GetStr_syl30_one()+80,
                 pgongsi->pdayk[pgongsi->dayk_size-1].syl30);
             of_file << buf; 

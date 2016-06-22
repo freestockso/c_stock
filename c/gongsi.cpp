@@ -329,6 +329,23 @@ char* 	uc_GongSi::GetStr_syl30_one(void)
 	return str;
 }
 
+char* 	uc_GongSi::GetStr_syl250_one(void)
+{
+	static char str[256];
+	int i, index;
+
+
+    memset(str, 0, sizeof str);
+	index = dayk_size - 1;
+    if (pdayk[index].syl250 >= 50)
+        strcpy(str, "[*]");
+    else if (pdayk[index].syl250 >= 0)
+        strcpy(str, "[+]");    
+    else
+        strcpy(str, "[.]");
+	return str;
+}
+
 char* 	uc_GongSi::GetStr_syl30_czg(void)
 {
 	static char str[256];

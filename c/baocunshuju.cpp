@@ -2099,6 +2099,9 @@ void   uc_BaseData::pf_Baocun_code_and_name(void)
     fread(buf, 1, 118, fp_read); //120个文件头数据不要
 	while (!feof(fp_read)) 
     {
+        char tmp[16];
+        memset(tmp, 0, sizeof tmp);
+        
         fread(&codename, sizeof codename, 1, fp_read);
         if (*(int*)(&codename) == 0)
             break;
@@ -2106,9 +2109,10 @@ void   uc_BaseData::pf_Baocun_code_and_name(void)
         //调整一下名称中的空格，如果是空格则调整到‘0’，空格在后续的读取中会有问题
         for (i=0; i<16; i++)
         {
-            if (codename.code[i] == ' ')
-                codename.code[i] = '0';
+            if (codename.name[i] != ' ')
+				tmp[strlen(tmp)] = codename.name[i];
         }
+		strcpy(codename.name, tmp);
 
         if (codename.code[0] == '0' || codename.code[0] == '3')
         {

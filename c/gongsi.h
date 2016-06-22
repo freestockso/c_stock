@@ -135,6 +135,7 @@ public:
 	char* 	GetStr_syl30_hy(void);
 	char* 	GetStr_syl250_hy(void);
 	char* 	GetStr_syl30_one(void);
+	char* 	GetStr_syl250_one(void);	
 	char* 	GetStr_syl30_czg(void);
 	char* 	GetStr_tag_hy(void);
 	char* 	GetStr_tag_zs(void);
