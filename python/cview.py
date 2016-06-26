@@ -28,6 +28,13 @@ def View_10X(plt,df, d):
             sL.append(str(df.iat[arr[i],0]))
         sL.append(str(df.iat[size-1,0])) 
         ax.set_xticklabels(sL, rotation = 45)
+    if (d == '321'):
+        arr = range(size-1, 0, -1 * d_size)
+        for i in range(10):
+            sL.append(df.iat[arr[i],1])
+        sL.append(df.iat[0,1])    
+        ax.set_xticklabels(sL)
+		
 
 def ShowGS(com1, com2, com3):
 	if com3 == 'syl30':
@@ -147,7 +154,23 @@ def ShowHY(com1, com2, com3):
 	
 	
 def ShowMoney(com1, com2, com3):
-	pass
+	f_view = "..\\..\\data\\view\\money.txt"
+	if  os.path.exists(f_view) == False:
+		print "...[Error] no file " + f_view
+		return
+	df = pd.read_csv(f_view)
+	#print df
+	#df = df.sort_values('num',  ascending = False)	
+	me.PinghuaDF(df, 18, 5)	
+	me.PinghuaDF(df, 19, 5)	
+	me.PinghuaDF(df, 20, 5)	
+	df[['fm2','fm1']].plot(linewidth=LW)		
+	df['m1dm2'].plot(color='red', secondary_y=True, linewidth=LW)	
+	plt.title(com1 + ' m1/m2 ' +   str(max(df['month'])))
+
+	View_10X(plt, df, '321')
+	plt.show()
+	plt.close()
 
 def man():
 	print '   gscode  hb/sr/syl30/syl250'
