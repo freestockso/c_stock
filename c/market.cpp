@@ -207,7 +207,7 @@ void   uc_Market::out_m1_one(void)
     {
         if (is_m1_in_one(pgongsi) == YES)
         {
-            sprintf(buf, "%8s%10s%13s%10d%4.0f%3s%122s%10.2f\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
+            sprintf(buf, "%8s%10s%16s%10d%4.0f%3s%122s%10.2f\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].date,
                 pgongsi->fenshu,
                 pgongsi->GetStr_syl250_one(),
@@ -237,7 +237,7 @@ void   uc_Market::out_m1_one_s(void)
     {
         if (is_m1_in_one(pgongsi) == YES)
         {
-            sprintf(buf, "%8s%10s%13s%10d%4.0f%3s%42s%10.2f\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
+            sprintf(buf, "%8s%10s%16s%10d%4.0f%3s%42s[%6.2f]\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].date,
                 pgongsi->fenshu,
                 pgongsi->GetStr_syl250_one(),

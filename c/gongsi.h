@@ -91,6 +91,7 @@ public:
 	
 	float			QDpaiming;
 	int				num_gongsi_hy;
+	float 			PE;
 
 	//¼ÆËãÊý¾Ý
     int     flag;				//flag for tmp used		
@@ -108,6 +109,8 @@ public:
     void	Cal_p_woman(void);
     void	Cal_p_man(void);	
     void	Cal_cqj(void);
+	void    Cal_pe(void);
+
     void	Cal_p30d(void);
     void	Cal_p120d(void);    
     void	Cal_syl30(void);
@@ -144,6 +147,7 @@ public:
 
 	char*	GetHYCode(void);
 	int 	Get_fin_index(int date);
+	float 	Get_today_gb(void);
 	
 
 

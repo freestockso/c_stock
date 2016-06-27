@@ -18,6 +18,7 @@ int     uc_GongSi::Init(char *pcode)
 	readQuanXi();
     readFin();	
 	Cal_cqj();
+	Cal_pe();
 	Cal_p_man();
 	Cal_p_woman();
 	Cal_Qiangdu();
@@ -176,6 +177,28 @@ void     uc_GongSi::Cal_cqj(void)
 }
 
 
+void     uc_GongSi::Cal_pe(void)
+{
+	PE = 0;
+	float lr, price, sz, gb;
+
+	if (shouru_lirun_size < 6)
+		return;
+	if (shouru_lirun[shouru_lirun_size-1].lirun <= 0)
+		return;
+	lr = shouru_lirun[shouru_lirun_size-1].lirun;
+	price = pdayk[dayk_size-1].close;
+	gb = Get_today_gb();
+	sz = gb * price;
+
+	PE = sz / lr;
+
+	//printf("-------PE = %10.2f---------\n", PE);
+
+}
+
+
+
 float uc_GongSi::Get_songgu(unsigned int d_begin, unsigned int date)
 {
     int i;
@@ -332,7 +355,7 @@ char* 	uc_GongSi::GetStr_syl30_one(void)
 char* 	uc_GongSi::GetStr_syl250_one(void)
 {
 	static char str[256];
-	int i, index;
+	int  index;
 
 
     memset(str, 0, sizeof str);
@@ -416,10 +439,15 @@ char* 	uc_GongSi::GetStr_fin(void)
 	}
 
 	if (shouru_lirun[index].gdqyl >= 0)	
-		sprintf(str+strlen(str),"%02.0f]", shouru_lirun[index].gdqyl);
+		sprintf(str+strlen(str),"%02.0f,", shouru_lirun[index].gdqyl);
 	else
-		sprintf(str+strlen(str),"00]");
-	
+		sprintf(str+strlen(str),"00,");
+
+	if (PE < 99)	
+		sprintf(str+strlen(str),"%2.0f]", PE);
+	else
+		sprintf(str+strlen(str),"**]");
+		
 	return str;
 }
 
@@ -1078,3 +1106,33 @@ int uc_GongSi::Get_fin_index(int date)
 	return INVALID_INDEX;
 }
 
+
+float uc_GongSi::Get_today_gb(void)
+{
+	char file_source[64];
+    FILE *fp_read;
+	char f_code[128];
+	float gb = 0;
+
+	sprintf(file_source,"..\\data\\gb.txt");	
+	if ((fp_read = fopen(file_source,"rb")) != NULL )  //ÎÄ¼þ´æÔÚ
+	{
+		fclose(fp_read);		
+
+		ifstream if_file(file_source);		
+		if_file >> f_code;
+
+		while(!if_file.eof())
+		{
+			if (!strcmp(f_code, code))
+			{
+				if_file >> gb;
+				return gb;
+			}
+			if_file.getline(f_code, sizeof f_code);
+			if_file >> f_code;
+		};
+	}
+	
+	return gb;
+}
