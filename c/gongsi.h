@@ -115,8 +115,10 @@ public:
     void	Cal_p120d(void);    
     void	Cal_syl30(void);
     void	Cal_syl250(void);    
-    
-    int 	Is_InHY(char *hycode);
+
+	int 	Is_InGNHY(char *hyname);
+
+    int 	Is_InHY(char *hycode, char* hyname);
     int 	Is_399102(void);
     int 	Is_399101(void);
     int 	Is_399300(void);

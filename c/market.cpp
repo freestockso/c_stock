@@ -40,7 +40,12 @@ void   uc_Market::Init(void)
 	pgongsi->Init("399300");
 	strcpy(pgongsi->name, "三百");
 	gongsi_size++;
-	
+
+
+	pgongsi = &gongsi[gongsi_size];
+	pgongsi->Init("880529");
+	strcpy(pgongsi->name, "次新股");
+	gongsi_size++;	
 	
 
 }
@@ -77,6 +82,8 @@ void   uc_Market::Cal_m1(void)
          }  
     }
 
+	if (G_mode == A_m10)
+		return;
 
 	printf("output_view info ..........................\n");
 	for (i=0; i<gongsi_size; i++)
@@ -116,7 +123,9 @@ int   uc_Market::is_m1_in_one(uc_GongSi *pgongsi)
         "600276", 
         "600519",
         "300127",        
-        "300342",                
+        "300342", 
+        "000002",
+        "600332"
         };
     int i;
 
@@ -149,7 +158,8 @@ void   uc_Market::out_m1_czg(void)
         if (phy->pdayk[phy->dayk_size-1].syl250 <= 0)
             continue;
         {
-            sprintf(buf, "%8s%10s[%8s]%10d%4.0f%122s%8.2f\n", pgongsi->code, pgongsi->name, phy->name,
+            sprintf(buf, "%8s%10s[%8s]%16s%10d%4.0f%122s%8.2f\n", pgongsi->code, pgongsi->name, phy->name,
+            	pgongsi->GetStr_fin(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].date,
                 pgongsi->fenshu,
                 pgongsi->GetStr_syl30_czg(),
@@ -520,7 +530,7 @@ void   uc_Market::out_m1_hangye(void)
         {
             if (pgs->type != GONGSITYPE_GONGSI)
                 continue;
-            if (pgs->Is_InHY(pgongsi->code) == NO)
+            if (pgs->Is_InHY(pgongsi->code, pgongsi->name) == NO)
                 continue;
             if (pgs->name[0] == 'S')
                 continue;
@@ -816,7 +826,7 @@ void   uc_Market::out_m1_hangye_s(void)
         {
             if (pgs->type != GONGSITYPE_GONGSI)
                 continue;
-            if (pgs->Is_InHY(pgongsi->code) == NO)
+            if (pgs->Is_InHY(pgongsi->code, pgongsi->name) == NO)
                 continue;
             if (pgs->name[0] == 'S')
                 continue;
@@ -963,7 +973,7 @@ void uc_Market::Cal_HY_Fin(uc_GongSi *phy)
         pgongsi->flag = NO;
         if (pgongsi->type != GONGSITYPE_GONGSI)
             continue;
-        if  (pgongsi->Is_InHY(phy->code) == NO)
+        if  (pgongsi->Is_InHY(phy->code, phy->name) == NO)
             continue;
         pgongsi->flag = YES;    
         num_gongsi++;
@@ -1091,7 +1101,7 @@ void uc_Market::Cal_HY(uc_GongSi *phy)
         pgongsi->flag = NO;
         if (pgongsi->type != GONGSITYPE_GONGSI)
             continue;
-        if  (pgongsi->Is_InHY(phy->code) == NO)
+        if  (pgongsi->Is_InHY(phy->code, phy->name) == NO)
             continue;
         pgongsi->flag = YES;    
         num_gongsi++;

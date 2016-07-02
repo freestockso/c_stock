@@ -405,7 +405,7 @@ char* 	uc_GongSi::GetStr_syl250_hy(void)
     for (i=0; i<width; i++)
     {
         index = dayk_size - width + i;
-        if (pdayk[index].syl250 >= 0)
+        if (pdayk[index].syl250 = 0)
             str[i] = '+';
         else
             str[i] = '.';
@@ -914,9 +914,55 @@ void	uc_GongSi::Cal_syl250(void)
     return;
 }
 
+int uc_GongSi::Is_InGNHY(char *hyname)
+{
+
+	char file_source[64];
+	char readbuf[1024];	
+	char key[16];
+
+	if (name[0] >= '0' && name[0] <= '9')
+		return NO;
+
+	if (!strcmp(hyname, "´ÎÐÂ¹É") && atoi(code) > 599999)
+		return NO;
+
+	strcpy(key, hyname);
+
+	sprintf(file_source,"..\\data\\hangye_gongsi.txt");
+	ifstream if_file(file_source);		
+
+
+	while(if_file >> readbuf)
+	{
+		if (!strcmp(readbuf,"[END]") )
+			return NO;
+	
+		if (!strcmp(readbuf,key) )
+		{	
+			while(1)
+			{
+				if_file.getline(readbuf, sizeof readbuf);
+				if_file >> readbuf;    //code
+				if (!strcmp(readbuf,"##") )
+				{
+					return NO;
+				}
+
+				if (!strcmp(readbuf,code ))
+				{
+					return YES;
+				}
+			}
+		}	
+	}
+
+	return NO;
+}
+
 
 // first read to memory, MUST NOT read file every time
-int uc_GongSi::Is_InHY(char *hycode)
+int uc_GongSi::Is_InHY(char *hycode, char* hyname)
 {
     static  ut_CodeHY  codeHY[8192];
     static  int size_codeHY = 0;
@@ -929,6 +975,13 @@ int uc_GongSi::Is_InHY(char *hycode)
     if (!strcmp(hycode, "399300"))
         return Is_399300();
 
+	//if hycode > 8805, then see it is a gainian hangye
+	if (atoi(hycode) > 880500)
+	{
+		return Is_InGNHY(hyname);
+	}
+
+	
     //check if the codeHY is init
     if (size_codeHY == 0)
     {
@@ -1048,16 +1101,16 @@ int uc_GongSi::Is_czg(void)
 	if (index < 6)
 		return NO;
 
-	if (shouru_lirun[index].gdqyl < 0.08)
+	if (shouru_lirun[index].gdqyl < 8)
 		return NO;
 
-	if 	(shouru_lirun[index].tb_lirun < 0.5)
+	if 	(shouru_lirun[index].tb_lirun < 7)
 		return NO;
-	if 	(shouru_lirun[index-1].tb_lirun < 0.5)
+	if 	(shouru_lirun[index-1].tb_lirun < 7)
 		return NO;
-	if 	(shouru_lirun[index].tb_shouru< 0.3)
+	if 	(shouru_lirun[index].tb_shouru< 6)
 		return NO;
-	if 	(shouru_lirun[index-1].tb_shouru < 0.3)
+	if 	(shouru_lirun[index-1].tb_shouru < 6)
 		return NO;
 
 

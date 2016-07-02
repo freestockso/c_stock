@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
         SaveBinDat();
         return 0;
     }
-    if (action == A_m1)
+    if (action == A_m1 || action == A_m10)
     {
         Index_std_c();
         ReadBinDat();
@@ -216,7 +216,7 @@ int pf_GengXinAllDayK(void)
 	}	
 
 
- 
+	// @NEWHY new hangye our from tdx_index, here 
     //指数
     strcpy(ucv_baocunshuju.gongsi_name, "399101");
     ucv_baocunshuju.pf_BaoCunDayK();
@@ -228,6 +228,11 @@ int pf_GengXinAllDayK(void)
 
     strcpy(ucv_baocunshuju.gongsi_name, "399102");
     ucv_baocunshuju.pf_BaoCunDayK();
+
+	//其它行业
+    strcpy(ucv_baocunshuju.gongsi_name, "880529");
+    ucv_baocunshuju.pf_BaoCunDayK();
+
 
     return 1;
 }

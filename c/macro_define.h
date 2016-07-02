@@ -3,6 +3,9 @@
 
 
 
+extern unsigned int G_mode;
+
+
 
 #define		STR_FH		"\n----------------------------------------------------------------------------------------------\n"
 #define		STR_5KG	"     "
@@ -56,6 +59,7 @@
 
 #define		A_m0				0
 #define     A_m1               	1	
+#define     A_m10               	10	
 #define		A_m2				2	
 
 

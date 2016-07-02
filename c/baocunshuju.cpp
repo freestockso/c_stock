@@ -211,6 +211,15 @@ void uc_BaseData::Compute_Shouru_lirun(void)
 	{
 		shouru_lirun[i].tb_shouru = (My_div(shouru_lirun[i].shouru, shouru_lirun[i-1].shouru) - 1)*100;
 		shouru_lirun[i].tb_lirun = (My_div(shouru_lirun[i].lirun, shouru_lirun[i-1].lirun) - 1)*100;		
+
+		if (shouru_lirun[i].tb_shouru > 30)
+			shouru_lirun[i].tb_shouru = 30;
+		if (shouru_lirun[i].tb_shouru < -30)
+			shouru_lirun[i].tb_shouru = -30;
+		if (shouru_lirun[i].tb_lirun > 30)
+			shouru_lirun[i].tb_lirun = 30;
+		if (shouru_lirun[i].tb_lirun < -30)
+			shouru_lirun[i].tb_lirun = -30;
 	}
 
 /*	
