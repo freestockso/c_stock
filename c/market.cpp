@@ -41,12 +41,12 @@ void   uc_Market::Init(void)
 	strcpy(pgongsi->name, "三百");
 	gongsi_size++;
 
-
+/*
 	pgongsi = &gongsi[gongsi_size];
 	pgongsi->Init("880529");
 	strcpy(pgongsi->name, "次新股");
 	gongsi_size++;	
-	
+*/	
 
 }
 
@@ -158,12 +158,12 @@ void   uc_Market::out_m1_czg(void)
         if (phy->pdayk[phy->dayk_size-1].syl250 <= 0)
             continue;
         {
-            sprintf(buf, "%8s%10s[%8s]%16s%10d%4.0f%122s%8.2f\n", pgongsi->code, pgongsi->name, phy->name,
+            sprintf(buf, "%8s%10s[%8s]%16s%10d%4.0f%112s%8.2f\n", pgongsi->code, pgongsi->name, phy->name,
             	pgongsi->GetStr_fin(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].date,
                 pgongsi->fenshu,
                 pgongsi->GetStr_syl30_czg(),
-                pgongsi->pdayk[pgongsi->dayk_size-1].syl30);
+                pgongsi->pdayk[pgongsi->dayk_size-1].syl30+10);
             of_file << buf; 
        } 
     }

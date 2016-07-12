@@ -405,7 +405,7 @@ char* 	uc_GongSi::GetStr_syl250_hy(void)
     for (i=0; i<width; i++)
     {
         index = dayk_size - width + i;
-        if (pdayk[index].syl250 = 0)
+        if (pdayk[index].syl250 > 0)
             str[i] = '+';
         else
             str[i] = '.';
@@ -511,7 +511,7 @@ char* 	uc_GongSi::GetStr_tag_zs(void)
 		sprintf(str+strlen(str), ".  ");			
 
 
-	if (pdayk[index].syl30 > 15)
+	if (pdayk[index].syl30 > 8)
 		sprintf(str+strlen(str), "* ");			
 	else if (pdayk[index].syl30 > 0)
 		sprintf(str+strlen(str), "+ ");			
@@ -562,7 +562,7 @@ char* 	uc_GongSi::GetStr_tag_hy(void)
 		sprintf(str+strlen(str), ".  ");			
 
 
-	if (pdayk[index].syl30 > 20)
+	if (pdayk[index].syl30 > 10)
 		sprintf(str+strlen(str), "* ");			
 	else if (pdayk[index].syl30 > 0)
 		sprintf(str+strlen(str), "+ ");			
@@ -924,9 +924,13 @@ int uc_GongSi::Is_InGNHY(char *hyname)
 	if (name[0] >= '0' && name[0] <= '9')
 		return NO;
 
-	if (!strcmp(hyname, "次新股") && atoi(code) > 599999)
-		return NO;
-
+	if (!strcmp(hyname, "次新股"))
+	{ 
+		if (dayk_size > 250)
+			return NO;
+		else
+			return YES;
+	}
 	strcpy(key, hyname);
 
 	sprintf(file_source,"..\\data\\hangye_gongsi.txt");
