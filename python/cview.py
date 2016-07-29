@@ -143,6 +143,16 @@ def ShowHY(com1, com2, com3):
 		df[1:df.index.size]['dqsr'].plot(kind='bar',color='green')
 		df[1:df.index.size]['dqlr'].plot(color='red', secondary_y=True, linewidth=LW)		
 		plt.title(com1 + '  ' +  com2 + '  ' + str(df.loc[df.index.size-1,'date']))	
+	elif com3 == 'sr':
+		f_view = "..\\..\\data\\fin\\" + com2 + ".txt"
+		if  os.path.exists(f_view) == False:
+			print "...[Error] no file " + f_view
+			return
+		df = pd.read_table(f_view, sep=' +', engine = 'python')
+		df[1:df.index.size]['zsr'].plot(kind='bar',color='green')
+		df[1:df.index.size]['zlr'].plot(color='red', secondary_y=True, linewidth=LW)	
+		plt.title(com1 + '  ' +  com2 + '  ' + str(df.loc[df.index.size-1,'date']))
+		
 		
 	else:
 		print '[Error] input error ...'

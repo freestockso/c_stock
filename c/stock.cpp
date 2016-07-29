@@ -232,6 +232,10 @@ int pf_GengXinAllDayK(void)
 	//其它行业
     strcpy(ucv_baocunshuju.gongsi_name, "880529");
     ucv_baocunshuju.pf_BaoCunDayK();
+    strcpy(ucv_baocunshuju.gongsi_name, "880917");
+    ucv_baocunshuju.pf_BaoCunDayK();
+    strcpy(ucv_baocunshuju.gongsi_name, "880516");
+    ucv_baocunshuju.pf_BaoCunDayK();
 
 
     return 1;

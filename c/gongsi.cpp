@@ -1121,6 +1121,13 @@ int uc_GongSi::Is_czg(void)
 	return YES;	
 }
 
+int uc_GongSi::Is_cxg(void)
+{
+	if (dayk_size < 250)
+		return YES;
+	return NO;
+}
+
 int uc_GongSi::Is_czg_low(void)
 {
 

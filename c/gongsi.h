@@ -123,6 +123,7 @@ public:
     int 	Is_399101(void);
     int 	Is_399300(void);
 	int 	Is_czg(void);
+	int 	Is_cxg(void);
 	int 	Is_czg_low(void);    
 
 

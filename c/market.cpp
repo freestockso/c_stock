@@ -41,12 +41,17 @@ void   uc_Market::Init(void)
 	strcpy(pgongsi->name, "三百");
 	gongsi_size++;
 
-/*
+
 	pgongsi = &gongsi[gongsi_size];
-	pgongsi->Init("880529");
-	strcpy(pgongsi->name, "次新股");
+	pgongsi->Init("880917");
+	strcpy(pgongsi->name, "央企改革");
 	gongsi_size++;	
-*/	
+	
+	pgongsi = &gongsi[gongsi_size];
+	pgongsi->Init("880516");
+	strcpy(pgongsi->name, "ST板块");
+	gongsi_size++;	
+	
 
 }
 
@@ -112,20 +117,23 @@ void   uc_Market::out_m1(void)
 int   uc_Market::is_m1_in_one(uc_GongSi *pgongsi)
 {
     static char one[20][10] = {
-        "000418", 
         "600298", 
         "002508", 
         "000596", 
         "000858", 
         "002557", 
         "002304", 
-        "002661", 
-        "600276", 
         "600519",
-        "300127",        
-        "300342", 
-        "000002",
-        "600332"
+
+        "000799",
+        "600809", 
+        "600702", 
+        "600199",
+        "000568",
+
+        "600799",
+        "000860"
+
         };
     int i;
 
@@ -142,8 +150,12 @@ void   uc_Market::out_m1_czg(void)
     uc_GongSi *pgongsi, *phy;
     char file_write[] = "..\\data\\m1\\czg.txt";
 	char buf[512];
+	int num;
+	
 
     ofstream of_file(file_write);
+    num = 0;
+    of_file << "##成长股---------------------------\n";
     for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
     {
         if (pgongsi->Is_czg()== NO)
@@ -158,15 +170,42 @@ void   uc_Market::out_m1_czg(void)
         if (phy->pdayk[phy->dayk_size-1].syl250 <= 0)
             continue;
         {
-            sprintf(buf, "%8s%10s[%8s]%16s%10d%4.0f%112s%8.2f\n", pgongsi->code, pgongsi->name, phy->name,
+            sprintf(buf, "%8s%10s[%8s]%16s%10d%4.0f%112s[%6.2f]\n", pgongsi->code, pgongsi->name, phy->name,
             	pgongsi->GetStr_fin(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].date,
                 pgongsi->fenshu,
-                pgongsi->GetStr_syl30_czg(),
-                pgongsi->pdayk[pgongsi->dayk_size-1].syl30+10);
+                pgongsi->GetStr_syl30_one() + 10,
+                pgongsi->pdayk[pgongsi->dayk_size-1].syl30);
             of_file << buf; 
        } 
+	   num++;
+	   if (num == 20)
+	 		break;
     }
+
+	num = 0;
+    of_file << "\n\n##次新股---------------------------\n";
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+    {
+        if (pgongsi->Is_cxg()== NO)
+            continue;
+        if (pgongsi->fenshu < 70)
+            continue;
+        {
+            sprintf(buf, "%8s%10s[%8s]%16s%10d%4.0f%112s[%6.2f]\n", pgongsi->code, pgongsi->name, "  ",
+            	pgongsi->GetStr_fin(),
+                pgongsi->pdayk[pgongsi->dayk_size-1].date,
+                pgongsi->fenshu,
+                pgongsi->GetStr_syl30_one() + 10,
+                pgongsi->pdayk[pgongsi->dayk_size-1].syl30);
+            of_file << buf; 
+       } 
+//	   num++;
+//	   if (num == 20)
+//	 		break;
+    }
+
+
 
     return;
 }
@@ -217,7 +256,7 @@ void   uc_Market::out_m1_one(void)
     {
         if (is_m1_in_one(pgongsi) == YES)
         {
-            sprintf(buf, "%8s%10s%16s%10d%4.0f%3s%122s%10.2f\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
+            sprintf(buf, "%8s%10s%16s%10d%4.0f%3s%122s[%6.2f]\n", pgongsi->code, pgongsi->name, pgongsi->GetStr_fin(),
                 pgongsi->pdayk[pgongsi->dayk_size-1].date,
                 pgongsi->fenshu,
                 pgongsi->GetStr_syl250_one(),
