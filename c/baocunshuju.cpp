@@ -250,25 +250,42 @@ void uc_BaseData::Compute_Shouru_lirun(void)
 	*/
 	{
 		char file_write[64];	
+		float s_lrl;
 				
 		sprintf(file_write,"..\\data\\fin\\%s_tb.txt",gongsi_name);		
 		ofstream of_file(file_write);	 
 			
-		sprintf(writebuf ,"%12s%16s%16s%12s%12s%12s%16s\n","date","sr","lr","srtb","lrtb","gdqyl","gdqy"); 
+		sprintf(writebuf ,"%12s%16s%16s%12s%12s%12s%16s%12s\n","date","sr","lr","srtb","lrtb","gdqyl","gdqy", "lrl"); 
 		of_file << writebuf; 
+
+		if ( size_shouru_lirun > 7)
+			s_lrl = My_div(shouru_lirun[7].lirun, shouru_lirun[7].shouru) * 100;
+		else
+			s_lrl = 0;
 			
-		for (i=0; i<size_shouru_lirun; i++)
+		for (i=8; i<size_shouru_lirun; i++)
 		{
-			sprintf(writebuf ,"%12d%16.0f%16.0f%12.4f%12.4f%12.3f%16.0f\n",
+			if ( i >= 8)
+				sprintf(writebuf ,"%12d%16.0f%16.0f%12.4f%12.4f%12.3f%16.0f%12.2f\n",
 						shouru_lirun[i].date,
 						shouru_lirun[i].shouru,
 						shouru_lirun[i].lirun,
 						shouru_lirun[i].tb_shouru,
 						shouru_lirun[i].tb_lirun,
 						shouru_lirun[i].gdqyl,
-						shouru_lirun[i].gdqy						
-						); 
-					of_file << writebuf; 
+						shouru_lirun[i].gdqy,
+						My_div(shouru_lirun[i].lirun, shouru_lirun[i].shouru) * 100); 
+			else
+				sprintf(writebuf ,"%12d%16.0f%16.0f%12.4f%12.4f%12.3f%16.0f%12.2f\n",
+						shouru_lirun[i].date,
+						shouru_lirun[i].shouru,
+						shouru_lirun[i].lirun,
+						shouru_lirun[i].tb_shouru,
+						shouru_lirun[i].tb_lirun,
+						shouru_lirun[i].gdqyl,
+						shouru_lirun[i].gdqy,
+						s_lrl); 
+			of_file << writebuf; 
 		}
 	}
 
