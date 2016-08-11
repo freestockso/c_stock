@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
 
     if (action == A_rFINList)
     {
-		//Market.Action_FinList();
+		Market.rFinList();
         return 0;
     }
 

@@ -94,8 +94,8 @@ def ShowHY(com1, com2, com3):
 			print "...[Error] no file " + f_view
 			return
 		df = pd.read_table(f_view, sep=' +', engine = 'python')
-		if df.index.size > 250:
-			df = df.drop(range(df.index.size - 250))
+		if df.index.size > 750:
+			df = df.drop(range(df.index.size - 750))
 		plt.fill_between(df.index, df['syl30'], 0, where=df['syl30']>0,facecolor='red')
 		plt.fill_between(df.index, df['syl30'], 0, where=df['syl30']<=0,facecolor='green')
 		plt.title(com1 + '  ' +  com2 + '  '  + str(max(df['date'])))
@@ -128,8 +128,8 @@ def ShowHY(com1, com2, com3):
 			print "...[Error] no file " + f_view
 			return
 		df = pd.read_table(f_view, sep=' +', engine = 'python')
-		if df.index.size > 250:
-			df = df.drop(range(df.index.size - 250))
+		if df.index.size > 750:
+			df = df.drop(range(df.index.size - 750))
 		plt.fill_between(df.index, df['p30d'], 0, where=df['p30d']>0,facecolor='red')
 		plt.fill_between(df.index, df['p30d'], 0, where=df['p30d']<=0,facecolor='green')
 		plt.title(com1 + '  ' +  com2 + '  '  + str(max(df['date'])))
@@ -173,9 +173,8 @@ def ShowMoney(com1, com2, com3):
 	plt.close()
 
 def man():
-	print '   gscode  hb/sr/syl30/syl250'
-	print '   hycode gbsr/sr/p30d/p120d/syl30/syl250'
-	print '   hy -- output all hy info'
+	print '   gs gscode  hb/sr/syl30/syl250'
+	print '   hy hycode sr/p30d/p120d/syl30/syl250'
 	print '   m1'
 	
 while True:

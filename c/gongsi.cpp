@@ -112,7 +112,8 @@ void uc_GongSi::readFin(void)
 				if_file >> shouru_lirun[shouru_lirun_size].tb_shouru;					
 				if_file >> shouru_lirun[shouru_lirun_size].tb_lirun;									
 				if_file >> shouru_lirun[shouru_lirun_size].gdqyl;													
-				if_file >> shouru_lirun[shouru_lirun_size].gdqy;																	
+				if_file >> shouru_lirun[shouru_lirun_size].gdqy;
+				if_file.getline(readbuf, sizeof readbuf); //first line invalid				
 				shouru_lirun_size++;
 			};
 			shouru_lirun_size--;
@@ -423,8 +424,10 @@ char* 	uc_GongSi::GetStr_fin(void)
 	memset(str, 0 ,sizeof str);
 
 	if (shouru_lirun_size < 8)
+	{	
+		sprintf(str,"[              ]");
 		return str;
-
+	}
 	index = shouru_lirun_size - 1;
 	if (shouru_lirun[index-7].gdqyl >= 0)
 		sprintf(str,"[%02.0f", shouru_lirun[index-7].gdqyl);

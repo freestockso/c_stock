@@ -360,8 +360,8 @@ void uc_BaseData::vf_BaoCun_F10_Shouru_Lirun(void)
 	size_tmp = 0;
 
 	// filename
-	sprintf(file_lr, "..\\data\\fin_sou\\%s1", gongsi_name);	
-	sprintf(file_zc, "..\\data\\fin_sou\\%s2", gongsi_name);	
+	sprintf(file_lr, "c:\\fin\\%s1", gongsi_name);	
+	sprintf(file_zc, "c:\\fin\\%s2", gongsi_name);	
 	if (MYFile_FileIsExist(file_lr) == NO)
 	{
 		printf("...file %s not exist!...\n", file_lr);
@@ -1680,7 +1680,7 @@ char* uc_BaseData::GetTdxHangYeName(char *key)
 
 	strcpy(name, "NULL");
 
-	sprintf(file_source,"D:\\stock run\\database\\tdx_index.txt");
+	sprintf(file_source,"..\\data\\tdx_index.txt");
 	ifstream if_file(file_source);		
 
 	while(if_file >> readbuf)
@@ -1710,7 +1710,7 @@ char* uc_BaseData::GetTdxGongsiHangYe_son(char *key)
 
 	strcpy(name, "NULL");
 
-	sprintf(file_source,"D:\\stock run\\database\\tdx_gongsi.txt");
+	sprintf(file_source,"..\\data\\tdx_gongsi.txt");
 	ifstream if_file(file_source);		
 
 	while(if_file >> readbuf)
@@ -1741,7 +1741,7 @@ int uc_BaseData::Is_rzrq(char *key)
 	char readbuf[1024];	
 
 
-	sprintf(file_source,"D:\\stock run\\database\\rzrq.txt");
+	sprintf(file_source,"..\\data\\rzrq.txt");
 	ifstream if_file(file_source);		
 
 	while(if_file >> readbuf)

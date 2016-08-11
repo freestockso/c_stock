@@ -56,6 +56,52 @@ void   uc_Market::Init(void)
 }
 
 
+void   uc_Market::rFinList(void)
+{
+	char file_source[64] = "..\\data\\tdx_gongsi.txt" ;
+	char file_list[64] = "c:\\fin\\list.txt" ;
+	char file_name[64];
+	char readbuf[1024];	
+	ifstream if_file(file_source);		
+	ofstream of_file(file_list);	
+	
+	while(if_file >> readbuf)
+	{
+		if (!strcmp(readbuf,"[END]") )
+			break;
+
+		printf("code = [%s]\n", readbuf);
+			
+		if (readbuf[0] != '8')
+		{
+			sprintf(file_name, "c:\\fin\\%s1", readbuf);
+			if (MYFile_FileIsExist(file_name) == NO)
+			{
+				of_file << readbuf;
+				of_file << "    1";
+				of_file << "\n";
+			}
+
+			else 
+			{
+				sprintf(file_name, "c:\\fin\\%s2", readbuf);
+				if (MYFile_FileIsExist(file_name) == NO)
+				{
+					of_file << readbuf;
+					of_file << "    2";
+					of_file << "\n";
+				}
+			}	
+		}
+		
+		if_file.getline(readbuf, sizeof readbuf);
+
+	}
+	of_file << "[END]";
+
+	return;
+}
+
 void   uc_Market::cHYF(void)
 {
     int i;
@@ -132,7 +178,11 @@ int   uc_Market::is_m1_in_one(uc_GongSi *pgongsi)
         "000568",
 
         "600799",
-        "000860"
+        "000860",
+
+        "000418",
+        "002032",
+        "002403"
 
         };
     int i;
@@ -183,27 +233,6 @@ void   uc_Market::out_m1_czg(void)
 	 		break;
     }
 
-	num = 0;
-    of_file << "\n\n##´ÎÐÂ¹É---------------------------\n";
-    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
-    {
-        if (pgongsi->Is_cxg()== NO)
-            continue;
-        if (pgongsi->fenshu < 70)
-            continue;
-        {
-            sprintf(buf, "%8s%10s[%8s]%16s%10d%4.0f%112s[%6.2f]\n", pgongsi->code, pgongsi->name, "  ",
-            	pgongsi->GetStr_fin(),
-                pgongsi->pdayk[pgongsi->dayk_size-1].date,
-                pgongsi->fenshu,
-                pgongsi->GetStr_syl30_one() + 10,
-                pgongsi->pdayk[pgongsi->dayk_size-1].syl30);
-            of_file << buf; 
-       } 
-//	   num++;
-//	   if (num == 20)
-//	 		break;
-    }
 
 
 
