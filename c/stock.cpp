@@ -153,7 +153,9 @@ int main(int argc, char* argv[])
     if (action == A_gQX)
     {
         uc_BaseData  ucv_baocunshuju;
-        ucv_baocunshuju.pf_BaoCunQuanXi();
+//        ucv_baocunshuju.pf_BaoCunQuanXi();
+		ucv_baocunshuju.pf_BaoCunQuanXi_365("C:\\dzh365\\Download\\PWR\\full_sh.pwr");
+		ucv_baocunshuju.pf_BaoCunQuanXi_365("C:\\dzh365\\Download\\PWR\\full_sz.pwr");
         ucv_baocunshuju.pf_Baocun_code_and_name();
         return 0;
     }

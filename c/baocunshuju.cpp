@@ -198,29 +198,32 @@ void uc_BaseData::Compute_Shouru_lirun(void)
 		}
 	}
 
+
+	//compute for tb
+	for (i=size_shouru_lirun-1; i>=5; i--)	
+	{
+		shouru_lirun[i].tb_shouru = (My_div(shouru_lirun[i].shouru, shouru_lirun[i-4].shouru) - 1)*100;
+		shouru_lirun[i].tb_lirun = (My_div(shouru_lirun[i].lirun, shouru_lirun[i-4].lirun) - 1)*100;		
+
+		if (shouru_lirun[i].tb_shouru > 200)
+			shouru_lirun[i].tb_shouru = 200;
+		if (shouru_lirun[i].tb_shouru < -50)
+			shouru_lirun[i].tb_shouru = -50;
+		if (shouru_lirun[i].tb_lirun > 200)
+			shouru_lirun[i].tb_lirun = 200;
+		if (shouru_lirun[i].tb_lirun < -50)
+			shouru_lirun[i].tb_lirun = -50;
+	}
+
+
 	//compute for 4 season
 	for (i=size_shouru_lirun-1; i>=4; i--)
 	{
 		shouru_lirun[i].shouru = shouru_lirun[i].shouru + shouru_lirun[i-1].shouru + shouru_lirun[i-2].shouru + shouru_lirun[i-3].shouru;
 		shouru_lirun[i].lirun = shouru_lirun[i].lirun + shouru_lirun[i-1].lirun + shouru_lirun[i-2].lirun + shouru_lirun[i-3].lirun;
-		shouru_lirun[i].gdqyl = My_div(shouru_lirun[i].lirun, shouru_lirun[i].shouru) * 100;
+		shouru_lirun[i].gdqyl = My_div(shouru_lirun[i].lirun, shouru_lirun[i].gdqy) * 100;
 	}
 
-	//compute for HB
-	for (i=size_shouru_lirun-1; i>=5; i--)	
-	{
-		shouru_lirun[i].tb_shouru = (My_div(shouru_lirun[i].shouru, shouru_lirun[i-1].shouru) - 1)*100;
-		shouru_lirun[i].tb_lirun = (My_div(shouru_lirun[i].lirun, shouru_lirun[i-1].lirun) - 1)*100;		
-
-		if (shouru_lirun[i].tb_shouru > 30)
-			shouru_lirun[i].tb_shouru = 30;
-		if (shouru_lirun[i].tb_shouru < -30)
-			shouru_lirun[i].tb_shouru = -30;
-		if (shouru_lirun[i].tb_lirun > 30)
-			shouru_lirun[i].tb_lirun = 30;
-		if (shouru_lirun[i].tb_lirun < -30)
-			shouru_lirun[i].tb_lirun = -30;
-	}
 
 /*	
 	for (i=size_shouru_lirun-1; i>3; i--)
@@ -1165,6 +1168,115 @@ int     uc_BaseData::pf_BaoCunQuanXi(void)
 */
 
 
+int     uc_BaseData::pf_BaoCunQuanXi_365(char *filename)
+{
+    FILE *fp_read;
+    ut_DZH_ChuQuan ut_chuquan;
+    ut_DZH_ChuQuan qx[128];
+    int size_qx;
+    char file_gongsi[16], file_write[64];
+	char tmp[256];
+	struct tm *today;
+	char date_str[10];
+	time_t long_time;
+	int i, j, min_date, min_index;
+
+	if ((fp_read = fopen(filename,"rb")) == NULL) 
+	{
+		printf("[pf_BaoCunQuanXi]---------------------[%s]源文件不对\n",filename);
+		return -1;
+	}
+
+    //前面12个字节不需要，达到第一个公司的开始.后面是8个字节的公司名sz002024，后面是8个字节的全0
+    fread(&ut_chuquan, 12, 1, fp_read); 
+    fread(&file_gongsi, 16, 1, fp_read); 
+    fread(&tmp, 100, 1, fp_read);
+    
+    sprintf(file_write,"%s\\%s.txt",DIR_QuanXiSaveDir,file_gongsi+2); //去掉前面的sz或者sh
+    ofstream of_file(file_write);
+    size_qx = 0;
+    
+	while (!feof(fp_read)) 
+	{
+        fread(&ut_chuquan, 4, 1, fp_read);
+        if ((*((int*)(&ut_chuquan))) == 0xFFFFFFFF) // 下一个公司的开始
+        {
+            printf("[pf_BaoCunQuanXi]-----------------保存%s权息数据\n",file_gongsi);
+            
+			//20131101:按照从小到大保存权息数据
+			for (i=0; i<size_qx; i++)
+			{
+				qx[i].flag = NO;
+			}
+			for (i=0; i<size_qx; i++)
+			{
+				min_date = 99999999;				
+				for (j=0; j<size_qx; j++)
+				{
+					if (qx[j].date < min_date && qx[j].flag == NO)
+					{
+						min_date = qx[j].date;
+						min_index = j;
+					}
+				}
+
+				//输出
+				if (min_date != 99999999)
+				{
+					{
+		        	sprintf(tmp,"%12d%12.2f%12.2f%12.2f%12.2f\n",
+			        	qx[min_index].date,
+			         	qx[min_index].SongGu,
+			         	qx[min_index].PeiGu, 
+			         	qx[min_index].PeiGuJia, 
+			         	qx[min_index].Fenhong);
+					of_file << tmp;   	
+					}
+					qx[min_index].flag = YES;
+				}	
+			}
+			size_qx = 0;
+			
+
+            //关闭前面的文件，打开新的文件
+            sprintf(tmp, "[END]\n");
+	        of_file << tmp;
+            of_file.close();
+            
+            fread(&file_gongsi, 16, 1, fp_read);
+            fread(&tmp, 100, 1, fp_read);
+            sprintf(file_write,"%s\\%s.txt",DIR_QuanXiSaveDir,file_gongsi+2); //去掉前面的sz或者sh
+
+			//打开新文件
+            of_file.open(file_write);
+
+	        continue;	        
+        }
+        fread(&(ut_chuquan.SongGu), 4, 4, fp_read);
+        fread(&tmp, 100, 1, fp_read);
+
+        //转换一次时间，从秒计算的时间转换到日期时间
+        long_time = (long)ut_chuquan.date;
+        today = localtime( &long_time);
+		if (today != NULL)
+			sprintf(date_str,"%04d%02d%02d",today->tm_year+1900,today->tm_mon+1,today->tm_mday);
+		ut_chuquan.date = atoi(date_str);
+
+		//临时保存
+		memcpy(&qx[size_qx], &ut_chuquan, sizeof ut_chuquan);
+		size_qx++;
+		
+	}
+
+	sprintf(tmp, "[END]\n");
+	of_file << tmp;
+	
+	of_file.close();
+	fclose(fp_read);	
+
+	return 0;
+}
+
 
 
 int     uc_BaseData::pf_BaoCunQuanXi(void)
@@ -1173,12 +1285,12 @@ int     uc_BaseData::pf_BaoCunQuanXi(void)
     ut_DZH_ChuQuan ut_chuquan;
     ut_DZH_ChuQuan qx[128];
     int size_qx;
-    char file_gongsi[16], file_write[64], file_qx_cx[64];
+    char file_gongsi[16], file_write[64];
 	char tmp[256];
 	struct tm *today;
 	char date_str[10];
 	time_t long_time;
-	int i, j, min_date, min_index, qx_cx_date_max;
+	int i, j, min_date, min_index;
 
 	if ((fp_read = fopen(DIR_QuanXiFILE,"rb")) == NULL) 
 	{
@@ -1201,41 +1313,6 @@ int     uc_BaseData::pf_BaoCunQuanXi(void)
         {
             printf("[pf_BaoCunQuanXi]-----------------保存%s权息数据\n",file_gongsi);
             
-			//先要把前面基准的qx_cx数据弄过来，先保存
-			{
-	            sprintf(file_qx_cx,"D:\\stock run\\database\\quanxi_cx\\%s.txt",file_gongsi+2);
-
-				if (MYFile_FileIsExist(file_qx_cx) == NO)
-					goto _TAG_SAVE;
-	            
-				ifstream if_file_cx(file_qx_cx);	            
-    	        qx_cx_date_max = 0;
-
-				if_file_cx >> tmp;
-			    while (strcmp(tmp, "[END]"))
-				{
-					ut_chuquan.date = atoi(tmp);
-			        if_file_cx >> ut_chuquan.SongGu;
-			        if_file_cx >> ut_chuquan.PeiGu;
-					if_file_cx >> ut_chuquan.PeiGuJia;
-			        if_file_cx >> ut_chuquan.Fenhong;
-
-					qx_cx_date_max = ut_chuquan.date;
-
-		        	sprintf(tmp,"%12d%12.2f%12.2f%12.2f%12.2f\n",
-			        	ut_chuquan.date,
-			         	ut_chuquan.SongGu,
-			         	ut_chuquan.PeiGu, 
-			         	ut_chuquan.PeiGuJia, 
-			         	ut_chuquan.Fenhong);
-					of_file << tmp;   	
-
-			        if_file_cx.getline(tmp, sizeof tmp);
-					if_file_cx >> tmp;		
-			    }
-            }
-
-_TAG_SAVE:            
 			//20131101:按照从小到大保存权息数据
 			for (i=0; i<size_qx; i++)
 			{
@@ -1256,7 +1333,6 @@ _TAG_SAVE:
 				//输出
 				if (min_date != 99999999)
 				{
-					if (qx[min_index].date > qx_cx_date_max)
 					{
 		        	sprintf(tmp,"%12d%12.2f%12.2f%12.2f%12.2f\n",
 			        	qx[min_index].date,

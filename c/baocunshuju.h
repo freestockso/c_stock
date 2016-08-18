@@ -82,6 +82,7 @@ public:
 	
 	int  			pf_BaoCunDayK(void);
 	int             pf_BaoCunQuanXi(void);
+	int     		pf_BaoCunQuanXi_365(char *filename);
 	int     		pf_BaoCunQuanXi_CX(void);
 
 	void            pf_Baocun_code_and_name(void);	

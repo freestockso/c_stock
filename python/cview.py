@@ -66,10 +66,22 @@ def ShowGS(com1, com2, com3):
 		df = pd.read_table(f_view, sep=' +', engine = 'python')
 		#df['sr'].plot(kind='bar',color='green')
 		df[1:df.index.size]['sr'].plot(kind='bar',color='green')
+		df[1:df.index.size]['lr'].plot(color='red', secondary_y=True, linewidth=LW)	
+		plt.title(com1 + '  ' +  com2 + '  ' + str(df.loc[df.index.size-1,'date']))
+
+	elif com3 == 'lrl':
+		f_view = "..\\..\\data\\fin\\" + com2 + "_tb.txt"
+		if  os.path.exists(f_view) == False:
+			print "...[Error] no file " + f_view
+			return
+		df = pd.read_table(f_view, sep=' +', engine = 'python')
+		#df['sr'].plot(kind='bar',color='green')
+		df[1:df.index.size]['sr'].plot(kind='bar',color='green')
 		df[1:df.index.size]['lrl'].plot(color='red', secondary_y=True, linewidth=LW)	
 		plt.title(com1 + '  ' +  com2 + '  ' + str(df.loc[df.index.size-1,'date']))
-	
-	elif com3 == 'hb':
+
+        
+	elif com3 == 'tb':
 		f_view = "..\\..\\data\\fin\\" + com2 + "_tb.txt"
 		if  os.path.exists(f_view) == False:
 			print "...[Error] no file " + f_view
@@ -133,7 +145,7 @@ def ShowHY(com1, com2, com3):
 		plt.fill_between(df.index, df['p30d'], 0, where=df['p30d']>0,facecolor='red')
 		plt.fill_between(df.index, df['p30d'], 0, where=df['p30d']<=0,facecolor='green')
 		plt.title(com1 + '  ' +  com2 + '  '  + str(max(df['date'])))
-	elif com3 == 'sr':
+	elif com3 == 'lrl':
 		f_view = "..\\..\\data\\fin\\" + com2 + ".txt"
 		if  os.path.exists(f_view) == False:
 			print "...[Error] no file " + f_view
@@ -143,6 +155,16 @@ def ShowHY(com1, com2, com3):
 		df[1:df.index.size]['lrl'].plot(color='red', secondary_y=True, linewidth=LW)	
 		plt.title(com1 + '  ' +  com2 + '  ' + str(df.loc[df.index.size-1,'date']))	
 		
+	elif com3 == 'sr':
+		f_view = "..\\..\\data\\fin\\" + com2 + ".txt"
+		if  os.path.exists(f_view) == False:
+			print "...[Error] no file " + f_view
+			return
+		df = pd.read_table(f_view, sep=' +', engine = 'python')
+		df[1:df.index.size]['zsr'].plot(kind='bar',color='green')
+		df[1:df.index.size]['zlr'].plot(color='red', secondary_y=True, linewidth=LW)	
+		plt.title(com1 + '  ' +  com2 + '  ' + str(df.loc[df.index.size-1,'date']))	
+
 		
 	else:
 		print '[Error] input error ...'
@@ -173,8 +195,8 @@ def ShowMoney(com1, com2, com3):
 	plt.close()
 
 def man():
-	print '   gs gscode  hb/sr/syl30/syl250'
-	print '   hy hycode sr/p30d/p120d/syl30/syl250'
+	print '   gs gscode  tb/sr/lrl/syl30/syl250 '
+	print '   hy hycode sr/lrl/p30d/p120d/syl30/syl250'
 	print '   m1'
 	
 while True:

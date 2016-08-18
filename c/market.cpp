@@ -622,6 +622,29 @@ void   uc_Market::out_m1_hangye(void)
 	}
 
 
+
+    //ALL hangye
+    of_file << "\n\n\n\n##### ALL hangye#################\n";
+	i = 0;
+    for(pgongsi = phead; pgongsi != NULL; pgongsi=pgongsi->pnext_by_fenshu)
+	{
+	    if (pgongsi->type != GONGSITYPE_HANGYE)
+	        continue;
+	    if (pgongsi->num_gongsi_hy <= 5)
+	        continue;
+	    if (!strcmp(pgongsi->name, "NULL"))
+	        continue;
+
+	    index = pgongsi->dayk_size-1;
+        sprintf(buf, "%4d%8s%10s%8.2f%%%122s\n", 
+            i, pgongsi->code, pgongsi->name, pgongsi->pdayk[index].QD_120_1 * 100,
+            pgongsi->GetStr_p30p120());
+        of_file << buf; 
+        
+		i++;
+	}
+
+
 }
 
 
